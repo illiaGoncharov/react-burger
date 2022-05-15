@@ -2,12 +2,11 @@ import React, { useRef, useState } from "react";
 
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 
-import { burgerIngredientsPropTypes, AppProps } from "../../utils/types";
-import PropTypes from "prop-types";
-
 import BurgerIngredientsCSS from './BurgerIngredients.module.css';
 
 import BurgerIngredient from "../BurgerIngredient/BurgerIngredient";
+import Modal from "../Modal/Modal";
+import IngredientDetails from "../IngredientDetails/IngredientDetails";
 
 function BurgerIngredients(props) {
   
@@ -20,7 +19,7 @@ function BurgerIngredients(props) {
     ref.current.scrollIntoView({ behavior: "smooth" });
   };
 
-  const [isOpened, setIsOpened] = useState(null);
+  const [isOpened, setIsOpened] = useState(false);
   function toggleModal(item) {
     setIsOpened(item);
   }
@@ -114,18 +113,13 @@ function BurgerIngredients(props) {
         </ul>
       </section>
     </div>
-    {/* {isOpened && (
+    {isOpened && (
       <Modal onClose={toggleModal} title={"Детали ингредиента"}>
         <IngredientDetails item={isOpened} />
       </Modal>
-    )} */}
+    )}
     </section>
   );
 }
 
 export default BurgerIngredients;
-
-// BurgerIngredients.propTypes = {
-//   ingredients: PropTypes.arrayOf(burgerIngredientsPropTypes).isRequired,
-// };
-
