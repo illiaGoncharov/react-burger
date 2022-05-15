@@ -1,0 +1,35 @@
+.header {
+    background: #1C1C21;
+}
+
+.header__nav {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 50px;
+    composes: header__nav;
+}
+
+.list__anchor {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+}
+
+.login__anchor {
+    composes: list__anchor;
+}
+
+.logo {
+    position: relative;
+}
