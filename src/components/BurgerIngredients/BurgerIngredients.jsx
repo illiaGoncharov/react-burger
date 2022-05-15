@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 
@@ -10,7 +10,7 @@ import IngredientDetails from "../IngredientDetails/IngredientDetails";
 
 function BurgerIngredients(props) {
   
-  const [current, setCurrent] = React.useState("bun");
+  const [current, setCurrent] = useState("bun");
   const bunRef = useRef(null);
   const sauceRef = useRef(null);
   const mainRef = useRef(null);

@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { createPortal } from "react-dom";
+import { useEffect } from "react";
 
 import ModalCSS from './Modal.module.css';
 import ModalOverlay from "../ModalOverlay/ModalOverlay";
@@ -7,7 +6,7 @@ import ModalOverlay from "../ModalOverlay/ModalOverlay";
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 
 function Modal(props) {
-  const modals = document.getElementById("react-modals");
+  const modals = document.querySelector("react-modals");
 
   useEffect(() => {
     const closeByEsc = (event) => {
@@ -16,7 +15,6 @@ function Modal(props) {
       }
     };
     window.addEventListener("keydown", closeByEsc);
-
     return () => {
       window.removeEventListener("keydown", closeByEsc);
     };

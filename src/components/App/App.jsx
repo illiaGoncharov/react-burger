@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import AppStyles from './App.module.css';
 import AppHeader from '../AppHeader/AppHeader';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
@@ -6,7 +6,7 @@ import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 
 function App() {
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [ingredientsDATA, setIngerdientsDATA] = useState([]);
 
   useEffect(() => {
@@ -18,12 +18,12 @@ function App() {
         if (!res.ok) {
           throw new Error(`Error status - ${res.status}`);
         }
-        const actualData = await res.json();
-        setIngerdientsDATA(actualData.data);
+        const DATA = await res.json();
+        setIngerdientsDATA(DATA.data);
         setError(null);
       } catch (error) {
-        setError(error.message);
         setIngerdientsDATA([]);
+        setError(error.message);
       } finally {
         setIsLoading(false);
       }
@@ -36,7 +36,7 @@ function App() {
       <AppHeader />
       <main className={`${AppStyles.main}`}>
         <BurgerIngredients ingredients={ingredientsDATA} />
-        {/* <BurgerConstructor construct={ingredientsDATA} /> */}
+        <BurgerConstructor constructor={ingredientsDATA} />
       </main>
     </div>
   );
