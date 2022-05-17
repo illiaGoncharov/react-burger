@@ -10,6 +10,9 @@ import ConstructorCSS from "./BurgerConstructor.module.css";
 import Modal from "../Modal/Modal";
 import OrderDetails from "../OrderDetails/OrderDetails";
 
+import PropTypes from "prop-types";
+import { burgerIngredientsPropTypes } from "../../utils/types";
+
 function BurgerConstructor(props) {
 
   const [isOpened, setIsOpened] = useState(false);
@@ -117,3 +120,7 @@ function BurgerConstructor(props) {
 }
 
 export default BurgerConstructor;
+
+BurgerConstructor.propTypes = {
+  constructor: PropTypes.arrayOf(burgerIngredientsPropTypes).isRequired,
+};

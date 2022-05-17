@@ -2,6 +2,8 @@ import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components
 
 import IngredientCSS from "./BurgerIngredient.module.css";
 
+import PropTypes from "prop-types";
+
 function BurgerIngredient(props) {
   return (
     <a className={IngredientCSS.ingredient__link} href="#">
@@ -22,4 +24,13 @@ function BurgerIngredient(props) {
 }
 
 export default BurgerIngredient;
+
+BurgerIngredient.propTypes = {
+  item: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+  }),
+  handler: PropTypes.any,
+};
   
