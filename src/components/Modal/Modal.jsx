@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 
+import { createPortal } from "react-dom";
+
 import ModalCSS from './Modal.module.css';
 import ModalOverlay from "../ModalOverlay/ModalOverlay";
 
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 
 function Modal(props) {
-  const modals = document.querySelector("react-modals");
+  const modalRoot = document.getElementById("react-modals");
 
   useEffect(() => {
     const closeByEsc = (event) => {
@@ -20,28 +22,31 @@ function Modal(props) {
     };
   }, []);
 
-  return (
-    <>  
-      <ModalOverlay onClose={props.onClose} />
-      <div className={`${ModalCSS.popup} pt-10 pl-10 pr-10 pb-15`}>
-        <div>
-          <div
-            className={`${ModalCSS.popup__header} text text_type_main-large mb-4`}
-          >
-            <span>{props.title}</span>
-            <span
-              className={ModalCSS.popup__close}
-              onClick={() => {
-                props.onClose(false);
-              }}
+  return createPortal(
+    (
+      <>  
+        <ModalOverlay onClose={props.onClose} />
+        <div className={`${ModalCSS.popup} pt-10 pl-10 pr-10 pb-15`}>
+          <div>
+            <div
+              className={`${ModalCSS.popup__header} text text_type_main-large mb-4`}
             >
-              <CloseIcon type="primary" />
-            </span>
+              <span>{props.title}</span>
+              <span
+                className={ModalCSS.popup__close}
+                onClick={() => {
+                  props.onClose(false);
+                }}
+              >
+                <CloseIcon type="primary" />
+              </span>
+            </div>
+            <div className={ModalCSS.popup__content}>{props.children}</div>
           </div>
-          <div className={ModalCSS.popup__content}>{props.children}</div>
         </div>
-      </div>
-    </>
+      </>
+    ),
+    modalRoot
   );
 }
 
