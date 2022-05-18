@@ -1,0 +1,19 @@
+.ingredient__link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 250px;
+    text-decoration: none;
+    color: inherit;
+    gap: 8px;
+}
+
+.ingredient__price {
+    display: flex;
+    flex-direction: row;
+    gap: 9px;
+}
+
+.ingredient__title {
+    text-align: center;
+}
