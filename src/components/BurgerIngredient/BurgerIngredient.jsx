@@ -5,6 +5,7 @@ import IngredientCSS from "./BurgerIngredient.module.css";
 import PropTypes from "prop-types";
 
 function BurgerIngredient(props) {
+
   return (
     <a className={IngredientCSS.ingredient__link} href="#">
       <img src={props.item.image} alt={props.item.name} />
