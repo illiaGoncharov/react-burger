@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useReducer, useEffect } from "react";
 import {
   ConstructorElement,
   DragIcon,
@@ -10,24 +10,29 @@ import ConstructorCSS from "./BurgerConstructor.module.css";
 import Modal from "../Modal/Modal";
 import OrderDetails from "../OrderDetails/OrderDetails";
 
-import IngredientsContext from "../../context/IngredientsContext"
+import IngredientsContext from "../../context/IngredientsContext";
+import { constructorReducer, ADD_INGREDIENT, REMOVE_INGREDIENT, SET_TOTAL_SUM } from '../../reducers/constructorReducer';
+
 
 function BurgerConstructor() {
-
   const ingredients = useContext(IngredientsContext);
+  const [state, dispatch] = useReducer(constructorReducer, { ingredients: [], totalSum: 0 });
+
+  const handleRemoveIngredient = (ingredient) => {
+    dispatch({ type: REMOVE_INGREDIENT, payload: ingredient });
+  }
 
   const [isOpened, setIsOpened] = useState(false);
   function toggleModal() {
     setIsOpened(!isOpened);
   }
-  
-  const totalSum = ingredients.reduce(
-    (acc, item) => acc + item.price,
-    0
-  );
 
   const bun = ingredients.find((item) => item.type === "bun");
   const otherIngredients = ingredients.filter((item) => item.type !== "bun");
+
+  useEffect(() => {
+    dispatch({ type: SET_TOTAL_SUM, payload: { ingredients } });
+  }, [dispatch, ingredients]);
 
   return ingredients.length && (
     <section className={`${ConstructorCSS.constructor} mt-25`}>
@@ -52,7 +57,7 @@ function BurgerConstructor() {
         className={`${ConstructorCSS.constructor__list} custom-scroll mt-4 mb-4`}
       >
         {otherIngredients.map((item, index) => (
-          <li className={ConstructorCSS.constructor__item} key={item._id + index}>
+          <li className={ConstructorCSS.constructor__item} key={item._id + index} onClick={() => handleRemoveIngredient(item)}>
             <DragIcon type="primary" />
             <ConstructorElement text={item.name} price={item.price} thumbnail={item.image} />
           </li>
@@ -71,7 +76,7 @@ function BurgerConstructor() {
       
       <section className={`${ConstructorCSS.constructor__total} mt-10`}>
         <div className={ConstructorCSS.constructor__wrap}>
-          <span className="text text_type_digits-medium">{totalSum}</span>
+          <span className="text text_type_digits-medium">{state.totalSum}</span>
           <span>
             <svg
               width="34"
