@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
   ConstructorElement,
   DragIcon,
@@ -10,22 +10,26 @@ import ConstructorCSS from "./BurgerConstructor.module.css";
 import Modal from "../Modal/Modal";
 import OrderDetails from "../OrderDetails/OrderDetails";
 
-import PropTypes from "prop-types";
-import { burgerIngredientsPropTypes } from "../../utils/types";
+import IngredientsContext from "../../context/IngredientsContext"
 
-function BurgerConstructor(props) {
+function BurgerConstructor() {
+
+  const ingredients = useContext(IngredientsContext);
 
   const [isOpened, setIsOpened] = useState(false);
   function toggleModal() {
     setIsOpened(!isOpened);
   }
   
-  const totalSum = props.constructor.reduce(
+  const totalSum = ingredients.reduce(
     (acc, item) => acc + item.price,
     0
   );
 
-  return props.constructor.length && (
+  const bun = ingredients.find((item) => item.type === "bun");
+  const otherIngredients = ingredients.filter((item) => item.type !== "bun");
+
+  return ingredients.length && (
     <section className={`${ConstructorCSS.constructor} mt-25`}>
 
       {isOpened && (
@@ -38,41 +42,30 @@ function BurgerConstructor(props) {
         <ConstructorElement
           type="top"
           isLocked={true}
-          text={props.constructor[0].name + ' (верх)'}
-          price={props.constructor[0].price}
-          thumbnail={props.constructor[0].image}
+          text={`${bun?.name} (верх)`}
+          price={bun?.price}
+          thumbnail={bun?.image}
         />
       </div>
 
       <ul
         className={`${ConstructorCSS.constructor__list} custom-scroll mt-4 mb-4`}
       >
-        {props.constructor.map(
-          (item, index) =>
-            index > 1 &&
-            index < props.constructor.length  && (
-              <li
-                className={ConstructorCSS.constructor__item}
-                key={item._id + index}
-              >
-                <DragIcon type="primary" />
-                <ConstructorElement
-                  text={item.name}
-                  price={item.price}
-                  thumbnail={item.image}
-                />
-              </li>
-            )
-        )}
+        {otherIngredients.map((item, index) => (
+          <li className={ConstructorCSS.constructor__item} key={item._id + index}>
+            <DragIcon type="primary" />
+            <ConstructorElement text={item.name} price={item.price} thumbnail={item.image} />
+          </li>
+        ))}
       </ul>
 
       <div className={ConstructorCSS.constructor__bottom}>
         <ConstructorElement
           type="bottom"
           isLocked={true}
-          text={props.constructor[0].name + ' (низ)'}
-          price={props.constructor[0].price}
-          thumbnail={props.constructor[0].image}
+          text={`${bun?.name} (низ)`}
+          price={bun?.price}
+          thumbnail={bun?.image}
         />
       </div>
       
@@ -120,7 +113,3 @@ function BurgerConstructor(props) {
 }
 
 export default BurgerConstructor;
-
-BurgerConstructor.propTypes = {
-  constructor: PropTypes.arrayOf(burgerIngredientsPropTypes).isRequired,
-};

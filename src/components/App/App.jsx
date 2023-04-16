@@ -3,6 +3,7 @@ import AppStyles from './App.module.css';
 import AppHeader from '../AppHeader/AppHeader';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
+import IngredientsContext from "../../context/IngredientsContext"
 
 function App() {
   const [error, setError] = useState(null);
@@ -10,25 +11,18 @@ function App() {
   const [ingredientsDATA, setIngerdientsDATA] = useState([]);
 
   useEffect(() => {
-    const getData = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch(
-          "https://norma.nomoreparties.space/api/ingredients"
-        );
-        if (!res.ok) {
-          throw new Error(`Error status - ${res.status}`);
-        }
-        const DATA = await res.json();
-        setIngerdientsDATA(DATA.data);
-        setError(null);
-      } catch (error) {
-        setIngerdientsDATA([]);
-        setError(error.message);
-      } finally {
+        const response = await fetch('https://norma.nomoreparties.space/api/ingredients');
+        const data = await response.json();
+        setIngerdientsDATA(data.data);
         setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError(error.message);
       }
     };
-    getData();
+    fetchData();
   }, []);
 
   return (
@@ -36,7 +30,9 @@ function App() {
       <AppHeader />
       <main className={`${AppStyles.main}`}>
         <BurgerIngredients ingredients={ingredientsDATA} />
-        <BurgerConstructor constructor={ingredientsDATA} />
+        <IngredientsContext.Provider value={ingredientsDATA}>
+          <BurgerConstructor />
+        </IngredientsContext.Provider>
       </main>
     </div>
   );
