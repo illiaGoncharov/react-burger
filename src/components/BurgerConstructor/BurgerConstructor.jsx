@@ -11,16 +11,21 @@ import Modal from "../Modal/Modal";
 import OrderDetails from "../OrderDetails/OrderDetails";
 
 import IngredientsContext from "../../context/IngredientsContext";
-import { constructorReducer, ADD_INGREDIENT, REMOVE_INGREDIENT, SET_TOTAL_SUM } from '../../reducers/constructorReducer';
+import OrderContext from "../../context/OrderContext"
 
+import { constructorReducer, REMOVE_INGREDIENT, SET_TOTAL_SUM } from '../../reducers/constructorReducer';
 
 function BurgerConstructor() {
   const ingredients = useContext(IngredientsContext);
-  const [state, dispatch] = useReducer(constructorReducer, { ingredients: [], totalSum: 0 });
+  const { orderNumber, setOrderNumber } = useContext(OrderContext);
 
+  const [state, dispatch] = useReducer(constructorReducer, { ingredients: [], totalSum: 0 });
   const handleRemoveIngredient = (ingredient) => {
     dispatch({ type: REMOVE_INGREDIENT, payload: ingredient });
   }
+  useEffect(() => {
+    dispatch({ type: SET_TOTAL_SUM, payload: { ingredients } });
+  }, [dispatch, ingredients]);
 
   const [isOpened, setIsOpened] = useState(false);
   function toggleModal() {
@@ -30,16 +35,41 @@ function BurgerConstructor() {
   const bun = ingredients.find((item) => item.type === "bun");
   const otherIngredients = ingredients.filter((item) => item.type !== "bun");
 
-  useEffect(() => {
-    dispatch({ type: SET_TOTAL_SUM, payload: { ingredients } });
-  }, [dispatch, ingredients]);
+  const handleOrderSubmit = () => {
+    const ingredientIds = ingredients.map((ingredient) => ingredient._id);
+    const body = JSON.stringify({
+      ingredients: ingredientIds
+    });
+    console.log(body);
+    
+    fetch('https://norma.nomoreparties.space/api/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: body
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setOrderNumber(data.order.number);
+        toggleModal();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return ingredients.length && (
     <section className={`${ConstructorCSS.constructor} mt-25`}>
 
       {isOpened && (
         <Modal onClose={toggleModal}>
-          <OrderDetails />
+          <OrderDetails orderNumber={orderNumber} />
         </Modal>
       )}
 
@@ -108,7 +138,7 @@ function BurgerConstructor() {
             </svg>
           </span>
         </div>
-        <Button type="primary" size="medium" onClick={toggleModal}>
+        <Button type="primary" size="medium" onClick={handleOrderSubmit}>
           <span className="text text_type_main-default">Оформить заказ</span>
         </Button>
       </section>
