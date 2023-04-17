@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext, useReducer, useEffect } from "react";
 import {
   ConstructorElement,
   DragIcon,
@@ -10,27 +10,66 @@ import ConstructorCSS from "./BurgerConstructor.module.css";
 import Modal from "../Modal/Modal";
 import OrderDetails from "../OrderDetails/OrderDetails";
 
-import PropTypes from "prop-types";
-import { burgerIngredientsPropTypes } from "../../utils/types";
+import IngredientsContext from "../../context/IngredientsContext";
+import OrderContext from "../../context/OrderContext"
 
-function BurgerConstructor(props) {
+import { constructorReducer, REMOVE_INGREDIENT, SET_TOTAL_SUM } from '../../reducers/constructorReducer';
+
+function BurgerConstructor() {
+  const ingredients = useContext(IngredientsContext);
+  const { orderNumber, setOrderNumber } = useContext(OrderContext);
+
+  const [state, dispatch] = useReducer(constructorReducer, { ingredients: [], totalSum: 0 });
+  const handleRemoveIngredient = (ingredient) => {
+    dispatch({ type: REMOVE_INGREDIENT, payload: ingredient });
+  }
+  useEffect(() => {
+    dispatch({ type: SET_TOTAL_SUM, payload: { ingredients } });
+  }, [dispatch, ingredients]);
 
   const [isOpened, setIsOpened] = useState(false);
   function toggleModal() {
     setIsOpened(!isOpened);
   }
-  
-  const totalSum = props.constructor.reduce(
-    (acc, item) => acc + item.price,
-    0
-  );
 
-  return props.constructor.length && (
+  const bun = ingredients.find((item) => item.type === "bun");
+  const otherIngredients = ingredients.filter((item) => item.type !== "bun");
+
+  const handleOrderSubmit = () => {
+    const ingredientIds = ingredients.map((ingredient) => ingredient._id);
+    const body = JSON.stringify({
+      ingredients: ingredientIds
+    });
+    console.log(body);
+    
+    fetch('https://norma.nomoreparties.space/api/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: body
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setOrderNumber(data.order.number);
+        toggleModal();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  return ingredients.length && (
     <section className={`${ConstructorCSS.constructor} mt-25`}>
 
       {isOpened && (
         <Modal onClose={toggleModal}>
-          <OrderDetails />
+          <OrderDetails orderNumber={orderNumber} />
         </Modal>
       )}
 
@@ -38,47 +77,36 @@ function BurgerConstructor(props) {
         <ConstructorElement
           type="top"
           isLocked={true}
-          text={props.constructor[0].name + ' (верх)'}
-          price={props.constructor[0].price}
-          thumbnail={props.constructor[0].image}
+          text={`${bun?.name} (верх)`}
+          price={bun?.price}
+          thumbnail={bun?.image}
         />
       </div>
 
       <ul
         className={`${ConstructorCSS.constructor__list} custom-scroll mt-4 mb-4`}
       >
-        {props.constructor.map(
-          (item, index) =>
-            index > 1 &&
-            index < props.constructor.length  && (
-              <li
-                className={ConstructorCSS.constructor__item}
-                key={item._id + index}
-              >
-                <DragIcon type="primary" />
-                <ConstructorElement
-                  text={item.name}
-                  price={item.price}
-                  thumbnail={item.image}
-                />
-              </li>
-            )
-        )}
+        {otherIngredients.map((item, index) => (
+          <li className={ConstructorCSS.constructor__item} key={item._id + index} onClick={() => handleRemoveIngredient(item)}>
+            <DragIcon type="primary" />
+            <ConstructorElement text={item.name} price={item.price} thumbnail={item.image} />
+          </li>
+        ))}
       </ul>
 
       <div className={ConstructorCSS.constructor__bottom}>
         <ConstructorElement
           type="bottom"
           isLocked={true}
-          text={props.constructor[0].name + ' (низ)'}
-          price={props.constructor[0].price}
-          thumbnail={props.constructor[0].image}
+          text={`${bun?.name} (низ)`}
+          price={bun?.price}
+          thumbnail={bun?.image}
         />
       </div>
       
       <section className={`${ConstructorCSS.constructor__total} mt-10`}>
         <div className={ConstructorCSS.constructor__wrap}>
-          <span className="text text_type_digits-medium">{totalSum}</span>
+          <span className="text text_type_digits-medium">{state.totalSum}</span>
           <span>
             <svg
               width="34"
@@ -110,7 +138,7 @@ function BurgerConstructor(props) {
             </svg>
           </span>
         </div>
-        <Button type="primary" size="medium" onClick={toggleModal}>
+        <Button type="primary" size="medium" onClick={handleOrderSubmit}>
           <span className="text text_type_main-default">Оформить заказ</span>
         </Button>
       </section>
@@ -120,7 +148,3 @@ function BurgerConstructor(props) {
 }
 
 export default BurgerConstructor;
-
-BurgerConstructor.propTypes = {
-  constructor: PropTypes.arrayOf(burgerIngredientsPropTypes).isRequired,
-};
