@@ -1,4 +1,4 @@
-import { useState, useContext, useReducer, useEffect } from "react";
+import { useState, useContext, useReducer, useEffect, useMemo } from "react";
 import {
   ConstructorElement,
   DragIcon,
@@ -32,8 +32,8 @@ function BurgerConstructor() {
     setIsOpened(!isOpened);
   }
 
-  const bun = ingredients.find((item) => item.type === "bun");
-  const otherIngredients = ingredients.filter((item) => item.type !== "bun");
+  const bun = useMemo(() => ingredients.find((item) => item.type === "bun"), [ingredients]);
+  const otherIngredients = useMemo(() => ingredients.filter((item) => item.type !== "bun"), [ingredients]);
 
   const handleOrderSubmit = () => {
     const ingredientIds = ingredients.map((ingredient) => ingredient._id);

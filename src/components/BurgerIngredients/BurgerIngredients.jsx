@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useContext } from "react";
 
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 
@@ -8,11 +8,11 @@ import BurgerIngredient from "../BurgerIngredient/BurgerIngredient";
 import Modal from "../Modal/Modal";
 import IngredientDetails from "../IngredientDetails/IngredientDetails";
 
-import { burgerIngredientsPropTypes } from "../../utils/types";
-import PropTypes from "prop-types";
+import IngredientsContext from "../../context/IngredientsContext";
 
-function BurgerIngredients(props) {
-  
+function BurgerIngredients() {
+  const ingredients = useContext(IngredientsContext);
+
   const [current, setCurrent] = useState("bun");
   const bunRef = useRef(null);
   const sauceRef = useRef(null);
@@ -64,7 +64,7 @@ function BurgerIngredients(props) {
       <section id={"bun"} ref={bunRef}>
         <h2 className={"text text_type_main-medium"}>Булки</h2>
         <ul className={BurgerIngredientsCSS.ingredients__list}>
-          {props.ingredients.map(
+          {ingredients.map(
             (item) =>
               item.type === "bun" && (
                 <li
@@ -82,7 +82,7 @@ function BurgerIngredients(props) {
       <section id={"sauce"} ref={sauceRef}>
         <h2 className={"text text_type_main-medium"}>Соусы</h2>
         <ul className={BurgerIngredientsCSS.ingredients__list}>
-          {props.ingredients.map(
+          {ingredients.map(
             (item) =>
               item.type === "sauce" && (
                 <li
@@ -100,7 +100,7 @@ function BurgerIngredients(props) {
       <section id={"main"} ref={mainRef}>
         <h2 className={"text text_type_main-medium"}>Начинки</h2>
         <ul className={BurgerIngredientsCSS.ingredients__list}>
-          {props.ingredients.map(
+          {ingredients.map(
             (item) =>
               item.type === "main" && (
                 <li
@@ -126,7 +126,3 @@ function BurgerIngredients(props) {
 }
 
 export default BurgerIngredients;
-
-BurgerIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf(burgerIngredientsPropTypes).isRequired,
-};

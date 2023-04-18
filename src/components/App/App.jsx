@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 
 import AppStyles from './App.module.css';
 import AppHeader from '../AppHeader/AppHeader';
@@ -14,15 +14,22 @@ function App() {
   const [ingredientsDATA, setIngerdientsDATA] = useState([]);
   const [orderNumber, setOrderNumber] = useState(null);
 
+  const handleErrors = (error) => {
+    console.error('Что-то пошло не так:', error);
+    setError(error.message);
+  }
+
   const fetchData = useCallback(async () => {
     try {
       const response = await fetch('https://norma.nomoreparties.space/api/ingredients');
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
       const data = await response.json();
       setIngerdientsDATA(data.data);
       setIsLoading(false);
     } catch (error) {
-      console.error('Что-то пошло не так:', error);
-      setError(error.message);
+      handleErrors(error);
     }
   }, []);
 
@@ -30,12 +37,14 @@ function App() {
     fetchData();
   }, [fetchData]);
 
+  const memoizedIngredientsData = useMemo(() => ingredientsDATA, [ingredientsDATA]);
+
   return (
     <div className="App">
       <AppHeader />
       <main className={`${AppStyles.main}`}>
-        <BurgerIngredients ingredients={ingredientsDATA} />
-        <IngredientsContext.Provider value={ingredientsDATA}>
+        <IngredientsContext.Provider value={memoizedIngredientsData}>
+          <BurgerIngredients />
           <OrderContext.Provider value={{ orderNumber, setOrderNumber }}>
             <BurgerConstructor />
           </OrderContext.Provider>
