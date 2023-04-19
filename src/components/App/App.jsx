@@ -1,42 +1,54 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+
 import AppStyles from './App.module.css';
 import AppHeader from '../AppHeader/AppHeader';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 
+import IngredientsContext from "../../context/IngredientsContext"
+import OrderContext from "../../context/OrderContext"
+
 function App() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [ingredientsDATA, setIngerdientsDATA] = useState([]);
+  const [orderNumber, setOrderNumber] = useState(null);
+
+  const handleErrors = (error) => {
+    console.error('Что-то пошло не так:', error);
+    setError(error.message);
+  }
+
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await fetch('https://norma.nomoreparties.space/api/ingredients');
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      const data = await response.json();
+      setIngerdientsDATA(data.data);
+      setIsLoading(false);
+    } catch (error) {
+      handleErrors(error);
+    }
+  }, []);
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const res = await fetch(
-          "https://norma.nomoreparties.space/api/ingredients"
-        );
-        if (!res.ok) {
-          throw new Error(`Error status - ${res.status}`);
-        }
-        const DATA = await res.json();
-        setIngerdientsDATA(DATA.data);
-        setError(null);
-      } catch (error) {
-        setIngerdientsDATA([]);
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    getData();
-  }, []);
+    fetchData();
+  }, [fetchData]);
+
+  const memoizedIngredientsData = useMemo(() => ingredientsDATA, [ingredientsDATA]);
 
   return (
     <div className="App">
       <AppHeader />
       <main className={`${AppStyles.main}`}>
-        <BurgerIngredients ingredients={ingredientsDATA} />
-        <BurgerConstructor constructor={ingredientsDATA} />
+        <IngredientsContext.Provider value={memoizedIngredientsData}>
+          <BurgerIngredients />
+          <OrderContext.Provider value={{ orderNumber, setOrderNumber }}>
+            <BurgerConstructor />
+          </OrderContext.Provider>
+        </IngredientsContext.Provider>
       </main>
     </div>
   );
