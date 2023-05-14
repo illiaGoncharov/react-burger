@@ -13,7 +13,7 @@ const BurgerIngredients = () => {
   const [sauceRef, inViewSauces] = useInView({ threshold: 0 });
 
   const { ingredients } = useSelector(store => store.ingredients);
-  
+
   const setCurrent = useCallback(() => {
     if (inViewBuns) {
       return 'buns';

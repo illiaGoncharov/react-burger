@@ -5,9 +5,9 @@ function OrderDetails() {
   const { order } = useSelector(store => store.order);
   return (
     <>
-      { order &&
+      {order &&
         <>
-        <div className={`text text_type_digits-large`}>{order.number}</div>
+          <div className={`text text_type_digits-large`}>{order.number}</div>
           <p className={`text text_type_main-medium mt-8`}>идентификатор заказа</p>
           <div className={`mt-15 mb-15`}>
             <img src={iconDone} alt="готовим заказ" />

@@ -25,13 +25,13 @@ function App() {
       <DndProvider backend={HTML5Backend}>
         <main className={AppStyles.main}>
           <div>
-            { isError &&
+            {isError &&
               <h1 className="text text_type_main-large m-25">Произошла ошибка при загрузке ингридиентов!</h1>
             }
-            { isLoading &&
+            {isLoading &&
               <h1 className="text text_type_main-large m-25">Идёт загрузка ингридиентов...</h1>
             }
-            { ingredients &&
+            {ingredients &&
               <BurgerIngredients />
             }
           </div>

@@ -9,7 +9,7 @@ import ConstructorCSS from "./BurgerConstructor.module.css";
 import {
   ConstructorElement
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import DraggableItem  from './DraggableItem/DraggableItem';
+import DraggableItem from './DraggableItem/DraggableItem';
 import EmptyContainer from './EmptyContainer/EmptyContainer';
 import OrderContainer from './OrderContainer/OrderContainer';
 
@@ -53,7 +53,7 @@ function BurgerConstructor() {
     <div className={`${ConstructorCSS.constructor} mb-10 mt-25`}>
       <div className={ConstructorCSS.constructor__list} ref={dropTarget}>
         <div className={`${ConstructorCSS.constructor__top}`}>
-          { bun ?
+          {bun ?
             <ConstructorElement
               type="top"
               isLocked={true}
@@ -66,15 +66,15 @@ function BurgerConstructor() {
           }
         </div>
         <div className={` ${ConstructorCSS.constructor__list} custom-scroll`}>
-          { stuffings !== undefined && stuffings.length !== 0 ?
+          {stuffings !== undefined && stuffings.length !== 0 ?
             <>
-              { stuffings.map((item, index) =>
+              {stuffings.map((item, index) =>
                 <DraggableItem key={item.id} elem={item} index={index} moveElement={moveElement} deleteElement={deleteElement} />
               )}
             </>
             :
             <div>
-              <EmptyContainer className={`${ConstructorCSS.constructor__item}`}  text="Добавьте ингредиент" />
+              <EmptyContainer className={`${ConstructorCSS.constructor__item}`} text="Добавьте ингредиент" />
             </div>
           }
         </div>
