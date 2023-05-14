@@ -1,126 +1,73 @@
-import { useRef, useState, useContext } from "react";
-
-import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
+import React, { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { useInView } from 'react-intersection-observer';
 
 import BurgerIngredientsCSS from './BurgerIngredients.module.css';
 
-import BurgerIngredient from "../BurgerIngredient/BurgerIngredient";
-import Modal from "../Modal/Modal";
-import IngredientDetails from "../IngredientDetails/IngredientDetails";
+import BurgerIngredient from "./BurgerIngredient/BurgerIngredient";
+import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 
-import IngredientsContext from "../../context/IngredientsContext";
+const BurgerIngredients = () => {
+  const [bunRef, inViewBuns] = useInView({ threshold: 0 });
+  const [mainRef, inViewMains] = useInView({ threshold: 0 });
+  const [sauceRef, inViewSauces] = useInView({ threshold: 0 });
 
-function BurgerIngredients() {
-  const ingredients = useContext(IngredientsContext);
+  const { ingredients } = useSelector(store => store.ingredients);
 
-  const [current, setCurrent] = useState("bun");
-  const bunRef = useRef(null);
-  const sauceRef = useRef(null);
-  const mainRef = useRef(null);
-  const clickTab = (e, ref) => {
-    setCurrent(e);
-    ref.current.scrollIntoView({ behavior: "smooth" });
-  };
+  const setCurrent = useCallback(() => {
+    if (inViewBuns) {
+      return 'buns';
+    } else if (inViewSauces) {
+      return 'sauces';
+    } else if (inViewMains) {
+      return 'mains';
+    }
+  }, [inViewBuns, inViewSauces, inViewMains]);
 
-  const [isOpened, setIsOpened] = useState(false);
-  function toggleModal(item) {
-    setIsOpened(item);
-  }
+  const current = useMemo(() => setCurrent(), [setCurrent]);
 
   return (
     <section className={BurgerIngredientsCSS.ingredients}>
+      <h1 className={"text text_type_main-large mb-5 mt-10"}>Соберите бургер</h1>
+      <div className={BurgerIngredientsCSS.ingredients__tabs}>
+        <Tab value="buns" active={current === 'buns'}>
+          Булки
+        </Tab>
+        <Tab value="sauces" active={current === 'sauces'}>
+          Соусы
+        </Tab>
+        <Tab value="mains" active={current === 'mains'}>
+          Начинки
+        </Tab>
+      </div>
 
-    <h1 className={"text text_type_main-large mb-5 mt-10"}>
-      Соберите бургер
-    </h1>
+      <div className={`${BurgerIngredientsCSS.ingredients__scroll} custom-scroll mt-10`}>
+        <div id="buns" ref={bunRef}>
+          <h2 className="text text_type_main-medium">Булки</h2>
+          <ol className={`${BurgerIngredientsCSS.ingredients__list} pl-4 pr-4 pb-10 pt-6`}>
+            {ingredients && ingredients.filter(item => item.type == "bun").map(item =>
+              <BurgerIngredient ingredient={item} key={item._id} />
+            )}
+          </ol>
+        </div>
 
-    <div className={BurgerIngredientsCSS.ingredients__tabs}>
-      <Tab
-        value="bun"
-        active={current === "bun"}
-        onClick={(e) => clickTab(e, bunRef)}
-      >
-        Булки
-      </Tab>
-      <Tab
-        value="sauce"
-        active={current === "sauce"}
-        onClick={(e) => clickTab(e, sauceRef)}
-      >
-        Соусы
-      </Tab>
-      <Tab
-        value="main"
-        active={current === "main"}
-        onClick={(e) => clickTab(e, mainRef)}
-      >
-        Начинки
-      </Tab>
-    </div>
-
-    <div
-      className={`${BurgerIngredientsCSS.ingredients__scroll} custom-scroll mt-10`}
-    >
-      <section id={"bun"} ref={bunRef}>
-        <h2 className={"text text_type_main-medium"}>Булки</h2>
-        <ul className={BurgerIngredientsCSS.ingredients__list}>
-          {ingredients.map(
-            (item) =>
-              item.type === "bun" && (
-                <li
-                  key={item._id}
-                  onClick={() => {
-                    toggleModal(item);
-                  }}
-                >
-                  <BurgerIngredient item={item} handler={toggleModal} />
-                </li>
-              )
-          )}
-        </ul>
-      </section>
-      <section id={"sauce"} ref={sauceRef}>
-        <h2 className={"text text_type_main-medium"}>Соусы</h2>
-        <ul className={BurgerIngredientsCSS.ingredients__list}>
-          {ingredients.map(
-            (item) =>
-              item.type === "sauce" && (
-                <li
-                  key={item._id}
-                  onClick={() => {
-                    toggleModal(item);
-                  }}
-                >
-                  <BurgerIngredient item={item} handler={toggleModal} />
-                </li>
-              )
-          )}
-        </ul>
-      </section>
-      <section id={"main"} ref={mainRef}>
-        <h2 className={"text text_type_main-medium"}>Начинки</h2>
-        <ul className={BurgerIngredientsCSS.ingredients__list}>
-          {ingredients.map(
-            (item) =>
-              item.type === "main" && (
-                <li
-                  key={item._id}
-                  onClick={() => {
-                    toggleModal(item);
-                  }}
-                >
-                  <BurgerIngredient item={item} handler={toggleModal} />
-                </li>
-              )
-          )}
-        </ul>
-      </section>
-    </div>
-    {isOpened && (
-      <Modal onClose={toggleModal} title={"Детали ингредиента"}>
-        <IngredientDetails item={isOpened} />
-      </Modal>
-    )}
+        <div id="sauces" ref={sauceRef}>
+          <h2 className="text text_type_main-medium">Соусы</h2>
+          <ol className={`${BurgerIngredientsCSS.ingredients__list} pl-4 pr-4 pb-10 pt-6`}>
+            {ingredients && ingredients.filter(item => item.type == "sauce").map(item =>
+              <BurgerIngredient ingredient={item} key={item._id} />
+            )}
+          </ol>
+        </div>
+        <div id="mains" ref={mainRef}>
+          <h2 className="text text_type_main-medium">Начинки</h2>
+          <ol className={`${BurgerIngredientsCSS.ingredients__list} pl-4 pr-4 pb-10 pt-6`}>
+            {ingredients && ingredients.filter(item => item.type == "main").map(item =>
+              <BurgerIngredient ingredient={item} key={item._id} />
+            )}
+          </ol>
+        </div>
+      </div>
     </section>
   );
 }
