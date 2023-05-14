@@ -1,4 +1,5 @@
 .ingredient__link {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -6,6 +7,7 @@
     text-decoration: none;
     color: inherit;
     gap: 8px;
+    cursor: pointer;
 }
 
 .ingredient__price {

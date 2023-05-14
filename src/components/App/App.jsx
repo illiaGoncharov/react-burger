@@ -1,47 +1,45 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from 'react-redux';
+
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 import AppStyles from './App.module.css';
+
 import AppHeader from '../AppHeader/AppHeader';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
-
-import IngredientsContext from "../../context/IngredientsContext"
-import OrderContext from "../../context/OrderContext"
+import { getIngredients } from '../../services/actions/ingredientsActions';
 
 function App() {
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [ingredientsDATA, setIngerdientsDATA] = useState([]);
-  const [orderNumber, setOrderNumber] = useState(null);
-
-  const fetchData = useCallback(async () => {
-    try {
-      const response = await fetch('https://norma.nomoreparties.space/api/ingredients');
-      const data = await response.json();
-      setIngerdientsDATA(data.data);
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Что-то пошло не так:', error);
-      setError(error.message);
-    }
-  }, []);
+  const { ingredients, isLoading, isError } = useSelector(store => store.ingredients);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    dispatch(getIngredients());
+  }, [dispatch]);
 
   return (
-    <div className="App">
+    <>
       <AppHeader />
-      <main className={`${AppStyles.main}`}>
-        <BurgerIngredients ingredients={ingredientsDATA} />
-        <IngredientsContext.Provider value={ingredientsDATA}>
-          <OrderContext.Provider value={{ orderNumber, setOrderNumber }}>
-            <BurgerConstructor />
-          </OrderContext.Provider>
-        </IngredientsContext.Provider>
-      </main>
-    </div>
+      <DndProvider backend={HTML5Backend}>
+        <main className={AppStyles.main}>
+          <div>
+            { isError &&
+              <h1 className="text text_type_main-large m-25">Произошла ошибка при загрузке ингридиентов!</h1>
+            }
+            { isLoading &&
+              <h1 className="text text_type_main-large m-25">Идёт загрузка ингридиентов...</h1>
+            }
+            { ingredients &&
+              <BurgerIngredients />
+            }
+          </div>
+
+          <BurgerConstructor />
+        </main>
+      </DndProvider>
+    </>
   );
 }
 

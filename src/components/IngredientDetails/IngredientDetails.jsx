@@ -1,19 +1,20 @@
 import IngredientDetailsCSS from './IngredientDetails.module.css';
+import { useSelector } from 'react-redux';
 
-import PropTypes from "prop-types";
+function IngredientDetails() {
 
-function IngredientDetails(props) {
+  const { selectedIngredient } = useSelector(store => store.modal);
 
   return (
     <>  
       <img
           className={IngredientDetailsCSS.image}
-          src={props.item.image}
-          alt={props.item.name}
+          src={selectedIngredient.image}
+          alt={selectedIngredient.name}
       />
 
       <p className={"text text_type_main-medium mt-4 mb-8"}>
-        {props.item.name}
+        {selectedIngredient.name}
       </p>
 
       <div>
@@ -23,7 +24,7 @@ function IngredientDetails(props) {
           >
             Калории,ккал
             <span className="text text_type_digits-default">
-              {props.item.calories}
+              {selectedIngredient.calories}
             </span>
           </li>
 
@@ -32,7 +33,7 @@ function IngredientDetails(props) {
           >
             Белки, г
             <span className="text text_type_digits-default">
-              {props.item.proteins}
+              {selectedIngredient.proteins}
             </span>
           </li>
 
@@ -41,7 +42,7 @@ function IngredientDetails(props) {
           >
             Жиры, г
             <span className="text text_type_digits-default">
-              {props.item.fat}
+              {selectedIngredient.fat}
             </span>
           </li>
 
@@ -50,7 +51,7 @@ function IngredientDetails(props) {
           >
             Углеводы, г
             <span className="text text_type_digits-default">
-              {props.item.carbohydrates}
+              {selectedIngredient.carbohydrates}
             </span>
           </li>
         </ul>
@@ -60,14 +61,3 @@ function IngredientDetails(props) {
 }
 
 export default IngredientDetails;
-
-IngredientDetails.propTypes = {
-  item: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    calories: PropTypes.number.isRequired,
-    proteins: PropTypes.number.isRequired,
-    fat: PropTypes.number.isRequired,
-    carbohydrates: PropTypes.number.isRequired,
-    image: PropTypes.string.isRequired,
-  })
-};
