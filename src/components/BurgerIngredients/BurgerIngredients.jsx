@@ -7,7 +7,6 @@ import BurgerIngredientsCSS from './BurgerIngredients.module.css';
 import BurgerIngredient from "./BurgerIngredient/BurgerIngredient";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 
-
 const BurgerIngredients = () => {
   const [bunRef, inViewBuns] = useInView({ threshold: 0 });
   const [mainRef, inViewMains] = useInView({ threshold: 0 });
