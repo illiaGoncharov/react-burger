@@ -1,100 +1,137 @@
-import { useCallback } from "react";
-import { useSelector, useDispatch } from 'react-redux';
-
-import update from 'immutability-helper';
-import { useDrop } from 'react-dnd';
-
-import ConstructorCSS from "./BurgerConstructor.module.css";
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import PropTypes from "prop-types";
+import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router-dom";
+import { useDrop } from "react-dnd";
 
 import {
-  ConstructorElement
+  CurrencyIcon,
+  ConstructorElement,
+  Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import DraggableItem from './DraggableItem/DraggableItem';
-import EmptyContainer from './EmptyContainer/EmptyContainer';
-import OrderContainer from './OrderContainer/OrderContainer';
 
-import { addIngredient, addBun, updateIngredients, deleteIngredient } from '../../services/actions/constructorActions';
+import styles from "./BurgerConstructor.module.css";
 
-function BurgerConstructor() {
+import { getApiOrder } from "../../services/actions/orderDetailsData";
+import {
+  deleteIngredient,
+  postIngredient,
+} from "../../services/actions/constructorIngredientsData";
+
+import { ConstructorElements } from "./ConstructorElements/ConstructorElements";
+
+function BurgerConstructor({ handlePopupState }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const { bun, stuffings } = useSelector(store => store.constructor);
+  const isAuthenticated = useSelector((store) => store.userData.isAuthenticated);
+  const ingredients = useSelector((store) => store.dataConstructor.ingredients);
+  
+  const buns = useSelector((store) => store.dataConstructor.bun);
+  const burgerData = [buns[0], ...ingredients, buns[1]]
 
-  const handleDrop = useCallback((item) => {
-    if (item.type === "bun") {
-      dispatch(addBun(item));
-    } else {
-      dispatch(addIngredient(item));
-    }
-  }, [dispatch]);
-
-  const [, dropTarget] = useDrop({
-    accept: "ingredient",
-    drop(item) {
-      handleDrop(item);
-    }
-  });
-
-  const moveElement = useCallback((dragIndex, hoverIndex) => {
-    const updatedElements = update(stuffings, {
-      $splice: [
-        [dragIndex, 1],
-        [hoverIndex, 0, stuffings[dragIndex]],
-      ],
-    })
-    dispatch(updateIngredients(updatedElements));
-  }, [stuffings, dispatch])
-
-  const deleteElement = (id) => {
-    dispatch(deleteIngredient(id));
+  const totalPrice = useMemo(() => {
+    const dataConstructor = [...ingredients, ...buns];
+    return dataConstructor.reduce((accumulator, item) => accumulator + item.price, 0);
+  }, [buns, ingredients]);
+  
+  function apiOrderData(handlePopupState, ingredients) {
+    handlePopupState(true);
+    dispatch(getApiOrder(ingredients));
   }
 
+  const [buttonState, setButtonState] = useState(false);
+
+  useEffect(() => {
+    setButtonState(!(ingredients.length > 0 && buns.length > 0));
+  }, [ingredients, buns]);
+
+  const handleIngredientDrop = (item) => {
+    const uniqueIngredient = { ...item, uniqueId: uuidv4() };
+    dispatch(postIngredient(uniqueIngredient));
+  };
+
+  const [, ref] = useDrop({
+    accept: "ingredient",
+    drop: handleIngredientDrop,
+  });
+
+  const onClick = () => {
+    isAuthenticated
+      ? apiOrderData(handlePopupState, burgerData)
+      : navigate("/login");
+  };
+
   return (
-    <div className={`${ConstructorCSS.constructor} mb-10 mt-25`}>
-      <div className={ConstructorCSS.constructor__list} ref={dropTarget}>
-        <div className={`${ConstructorCSS.constructor__top}`}>
-          {bun ?
+    <>
+      <div className={`mt-25 mb-10 ml-10 ${styles.constructor_container}`} ref={ref}>
+        <div className={styles.constructor}>
+          {buns.length > 0 ? (
             <ConstructorElement
               type="top"
+              text={`${buns[0].name} (верх)`}
+              price={buns[0].price}
+              thumbnail={buns[0].image}
               isLocked={true}
-              text={bun.name + " (верх)"}
-              price={bun.price}
-              thumbnail={bun.image}
             />
-            :
-            <EmptyContainer type="top" text="Добавьте булку" />
-          }
+          ) : (
+            <p>Выберите булочку</p>
+          )}
         </div>
-        <div className={` ${ConstructorCSS.constructor__list} custom-scroll`}>
-          {stuffings !== undefined && stuffings.length !== 0 ?
-            <>
-              {stuffings.map((item, index) =>
-                <DraggableItem key={item.id} elem={item} index={index} moveElement={moveElement} deleteElement={deleteElement} />
-              )}
-            </>
-            :
-            <div>
-              <EmptyContainer className={`${ConstructorCSS.constructor__item}`} text="Добавьте ингредиент" />
-            </div>
-          }
-        </div>
-        <div className={`${ConstructorCSS.constructor__bottom}`}>
-          {bun ?
+
+        <ul className={`custom-scroll ${styles.constructor__list}`}>
+          {ingredients.length > 0 ? (
+            ingredients.map((el, index) => {
+              return (
+                <ConstructorElements
+                  el={el}
+                  index={index}
+                  func={deleteIngredient}
+                  key={el.uniqueId}
+                />
+              );
+            })
+          ) : (
+            <p>Добавьте ингредиенты</p>
+          )}
+        </ul>
+
+        {buns.length > 0 ? (
+          <div className={styles.constructor}>
             <ConstructorElement
               type="bottom"
+              text={`${buns[0].name} (низ)`}
+              price={buns[0].price}
+              thumbnail={buns[0].image}
               isLocked={true}
-              text={bun.name + " (низ)"}
-              price={bun.price}
-              thumbnail={bun.image}
             />
-            :
-            <EmptyContainer type="bottom" text="Добавьте булку" />
-          }
-        </div>
+          </div>
+        ) : (
+          <p>Выбериье булочку</p>
+        )}
       </div>
-      <OrderContainer />
-    </div>
+      <div className={styles.final_price}>
+        <p className="text text_type_digits-medium mr-10">
+          {totalPrice}
+          <CurrencyIcon />
+        </p>
+        <Button
+          onClick={() => onClick()}
+          htmlType="button"
+          type="primary"
+          size="large"
+          disabled={buttonState}
+        >
+          Готово! 
+        </Button>
+      </div>
+    </>
   );
 }
+
+BurgerConstructor.propTypes = {
+  handlePopupState: PropTypes.func.isRequired,
+};
 
 export default BurgerConstructor;

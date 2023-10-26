@@ -1,0 +1,22 @@
+.ingredient__list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  list-style-type: none;
+  justify-content: center;
+  width: 250px;
+}
+
+.ingredient__name {
+  display: flex;
+  justify-content: center;
+  white-space: pre-wrap;
+  text-align: center;
+  width: 272px;
+  text-decoration: none;
+}
+
+.ingredient__price {
+  display: flex;
+  align-items: center;
+}

@@ -1,0 +1,78 @@
+.profile_order__list {
+  list-style: none;
+  margin: 0;
+  margin-bottom: 40px;
+}
+
+.profile_order__scroll {
+  height: 320px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.profile_order__main {
+  width: 670px;
+  display: flex;
+  flex-direction: column;
+  margin: 25px 25px 40px 25px;
+}
+
+.profile_order__orderNumber {
+  text-align: center;
+}
+
+.profile_order__listElement {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.profile_order__listElement:last-of-type {
+  margin-bottom: 0;
+}
+
+.profile_order__textActive {
+  color: rgba(0, 204, 204, 1);
+}
+
+.profile_order__image {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #801ab2;
+}
+
+.profile_order__price {
+  display: flex;
+  flex-direction: row;
+}
+
+.profile_order__imgAndName {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.profile_order__timeAndTotalPrice {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.profile_order__totalPrice {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.profile_order__textWrap {
+  white-space: normal;
+}
+
+.profile_order__loading {
+  margin: auto;
+}

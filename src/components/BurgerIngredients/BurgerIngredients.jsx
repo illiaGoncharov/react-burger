@@ -1,74 +1,99 @@
-import React, { useCallback, useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { useInView } from 'react-intersection-observer';
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useInView } from "react-intersection-observer";
+import { useLocation, Link } from "react-router-dom";
 
-import BurgerIngredientsCSS from './BurgerIngredients.module.css';
-
-import BurgerIngredient from "./BurgerIngredient/BurgerIngredient";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 
-const BurgerIngredients = () => {
-  const [bunRef, inViewBuns] = useInView({ threshold: 0 });
-  const [mainRef, inViewMains] = useInView({ threshold: 0 });
-  const [sauceRef, inViewSauces] = useInView({ threshold: 0 });
+import styles from "./BurgerIngredients.module.css";
 
-  const { ingredients } = useSelector(store => store.ingredients);
+import { Ingredient } from "./Ingredient/Ingredient";
 
-  const setCurrent = useCallback(() => {
-    if (inViewBuns) {
-      return 'buns';
-    } else if (inViewSauces) {
-      return 'sauces';
-    } else if (inViewMains) {
-      return 'mains';
+function BurgerIngredients() {
+  const data = useSelector((store) => store.ingredients.ingredients);
+  const location = useLocation();
+
+  const [current, setCurrent] = React.useState("Булки");
+
+  const setTab = (tab) => {
+    setCurrent(tab);
+    const element = document.getElementById(tab);
+    if (element) element.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const [bunsRef, bunsInView] = useInView({ threshold: 0.3 });
+  const [sausesRef, sausesInView] = useInView({ threshold: 0.3 });
+  const [mainRef, mainInView] = useInView({ threshold: 0.3 });
+
+  useEffect(() => {
+    if (bunsInView) {
+      setCurrent("Булки");
+    } else if (sausesInView) {
+      setCurrent("Соусы");
+    } else if (mainInView) {
+      setCurrent("Начинки");
     }
-  }, [inViewBuns, inViewSauces, inViewMains]);
+  }, [bunsInView, sausesInView, mainInView]);
 
-  const current = useMemo(() => setCurrent(), [setCurrent]);
+  function renderIngredientsByType(data, type) {
+    return data.map((el) => {
+      if (el.type === type)
+        return (
+          <Link
+            to={{
+              pathname: `/ingredients/${el._id}`,
+            }}
+            state={{ background: location }}
+            className={styles.ingredient__link}
+            key={el._id}
+          >
+            <ul className={styles.ingredient__list}>
+              <Ingredient el={el}></Ingredient>
+            </ul>
+          </Link>
+        );
+    });
+  }
 
   return (
-    <section className={BurgerIngredientsCSS.ingredients}>
-      <h1 className={"text text_type_main-large mb-5 mt-10"}>Соберите бургер</h1>
-      <div className={BurgerIngredientsCSS.ingredients__tabs}>
-        <Tab value="buns" active={current === 'buns'}>
+    <>
+      <div>
+        <h1 className="text text_type_main-large ml-0 mr-0 mb-5 mt-10">Соберите бургер</h1>
+        <div className={`mb-10 ${styles.tab_ontainer}`}>
+          <Tab value="Булки" active={current === "Булки"} onClick={setTab}>
+            Булки
+          </Tab>
+          <Tab value="Соусы" active={current === "Соусы"} onClick={setTab}>
+            Соусы
+          </Tab>
+          <Tab value="Начинки" active={current === "Начинки"} onClick={setTab}>
+            Начинки
+          </Tab>
+        </div>
+      </div>
+      <div className={`custom-scroll ${styles.scroll}`}>
+        <h2 id="Булки" className={`mb-6 ${styles.scroll__ingredients}`}>
           Булки
-        </Tab>
-        <Tab value="sauces" active={current === 'sauces'}>
+        </h2>
+        <div ref={bunsRef} className={styles.scroll__ingredients}>
+          {renderIngredientsByType(data, "bun")}
+        </div>
+
+        <h2 id="Соусы" className={`mb-6 ${styles.scroll__ingredients}`}>
           Соусы
-        </Tab>
-        <Tab value="mains" active={current === 'mains'}>
+        </h2>
+        <div ref={sausesRef} className={styles.scroll__ingredients}>
+          {renderIngredientsByType(data, "sauce")}
+        </div>
+
+        <h2 id="Начинки" className={`mb-6 ${styles.scroll__ingredients}`}>
           Начинки
-        </Tab>
-      </div>
-
-      <div className={`${BurgerIngredientsCSS.ingredients__scroll} custom-scroll mt-10`}>
-        <div id="buns" ref={bunRef}>
-          <h2 className="text text_type_main-medium">Булки</h2>
-          <ol className={`${BurgerIngredientsCSS.ingredients__list} pl-4 pr-4 pb-10 pt-6`}>
-            {ingredients && ingredients.filter(item => item.type == "bun").map(item =>
-              <BurgerIngredient ingredient={item} key={item._id} />
-            )}
-          </ol>
-        </div>
-
-        <div id="sauces" ref={sauceRef}>
-          <h2 className="text text_type_main-medium">Соусы</h2>
-          <ol className={`${BurgerIngredientsCSS.ingredients__list} pl-4 pr-4 pb-10 pt-6`}>
-            {ingredients && ingredients.filter(item => item.type == "sauce").map(item =>
-              <BurgerIngredient ingredient={item} key={item._id} />
-            )}
-          </ol>
-        </div>
-        <div id="mains" ref={mainRef}>
-          <h2 className="text text_type_main-medium">Начинки</h2>
-          <ol className={`${BurgerIngredientsCSS.ingredients__list} pl-4 pr-4 pb-10 pt-6`}>
-            {ingredients && ingredients.filter(item => item.type == "main").map(item =>
-              <BurgerIngredient ingredient={item} key={item._id} />
-            )}
-          </ol>
+        </h2>
+        <div ref={mainRef} className={styles.scroll__ingredients}>
+          {renderIngredientsByType(data, "sauce")}
         </div>
       </div>
-    </section>
+    </>
   );
 }
 

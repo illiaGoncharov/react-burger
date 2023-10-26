@@ -1,59 +1,51 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
-import PropTypes from "prop-types";
 
-import ModalCSS from './Modal.module.css';
-import ModalOverlay from "../ModalOverlay/ModalOverlay";
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 
-function Modal(props) {
-  const modalRoot = document.getElementById("react-modals");
+import ModalOverlay from "../ModalOverlay/ModalOverlay";
 
+import styles from "./Modal.module.css";
+import PropTypes from "prop-types";
+
+const modalPortal = document.getElementById("react-modals");
+
+export default function Modal({ children, handlePopupClose }) {
   useEffect(() => {
-    const closeByEsc = (event) => {
-      if (event.key === "Escape") {
-        props.onClose();
+    const handleEscapeKeyPress = (evt) => {
+      if (evt.key === "Escape") {
+        handlePopupClose();
       }
     };
-    window.addEventListener("keydown", closeByEsc);
-    return () => {
-      window.removeEventListener("keydown", closeByEsc);
-    };
-  }, [props]);
 
-  if (!modalRoot) {
-    return null;
-  }
+    document.addEventListener("keyup", handleEscapeKeyPress);
+
+    return () => {
+      document.removeEventListener("keyup", handleEscapeKeyPress);
+    };
+  }, [handlePopupClose]);
+
+  const closeModal = () => {
+    handlePopupClose();
+  };
 
   return createPortal(
-    (
-      <>  
-        <ModalOverlay onClose={props.onClose} />
-        <div className={`${ModalCSS.popup} pt-10 pl-10 pr-10 pb-15`}>
-          <div>
-            <div
-              className={`${ModalCSS.popup__header} text text_type_main-large mb-4`}
-            >
-              <span>{props.title}</span>
-              <span
-                className={ModalCSS.popup__close}
-                onClick={() => { props.onClose(false)}}
-                >
-                <CloseIcon type="primary" />
-              </span>
-            </div>
-            <div className={ModalCSS.popup__content}>{props.children}</div>
-          </div>
-        </div>
-      </>
-    ),
-    modalRoot
+    <>
+      <div className={styles.modal__container}>
+        <button
+          onClick={closeModal}
+          className={`${styles.modal__button} mt-15 mr-10`}
+        >
+          <CloseIcon type="primary" />
+        </button>
+        {children}
+      </div>
+      <ModalOverlay handlePopupClose={handlePopupClose} />
+    </>,
+    modalPortal
   );
 }
 
-export default Modal;
-
 Modal.propTypes = {
-  children: PropTypes.node.isRequired,
-  onClose: PropTypes.func.isRequired
+  handlePopupClose: PropTypes.func.isRequired,
 };

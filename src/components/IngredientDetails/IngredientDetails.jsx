@@ -1,63 +1,47 @@
-import IngredientDetailsCSS from './IngredientDetails.module.css';
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
-function IngredientDetails() {
+import styles from "./IngredientDetails.module.css";
 
-  const { selectedIngredient } = useSelector(store => store.modal);
-
+export default function IngredientDetails() {
+  const { id } = useParams();
+  const data = useSelector((store) => store.ingredients.ingredients);
+  const ingredient = data.find((item) => item._id === id);
   return (
-    <>  
-      <img
-          className={IngredientDetailsCSS.image}
-          src={selectedIngredient.image}
-          alt={selectedIngredient.name}
-      />
-
-      <p className={"text text_type_main-medium mt-4 mb-8"}>
-        {selectedIngredient.name}
-      </p>
-
-      <div>
-        <ul className={IngredientDetailsCSS.list}>
-          <li
-            className={`${IngredientDetailsCSS.list__item} text text_type_main-default text_color_inactive`}
-          >
-            Калории,ккал
-            <span className="text text_type_digits-default">
-              {selectedIngredient.calories}
-            </span>
-          </li>
-
-          <li
-            className={`${IngredientDetailsCSS.list__item} text text_type_main-default text_color_inactive`}
-          >
-            Белки, г
-            <span className="text text_type_digits-default">
-              {selectedIngredient.proteins}
-            </span>
-          </li>
-
-          <li
-            className={`${IngredientDetailsCSS.list__item} text text_type_main-default text_color_inactive`}
-          >
-            Жиры, г
-            <span className="text text_type_digits-default">
-              {selectedIngredient.fat}
-            </span>
-          </li>
-
-          <li
-            className={`${IngredientDetailsCSS.list__item} text text_type_main-default text_color_inactive`}
-          >
-            Углеводы, г
-            <span className="text text_type_digits-default">
-              {selectedIngredient.carbohydrates}
-            </span>
-          </li>
-        </ul>
-      </div>
+    <>
+      {data && ingredient && (
+        <div className={styles.ingredient}>
+          <header className={`ml-10 text text_type_main-large ${styles.ingredient__header}`}>
+            Детали ингредиента
+          </header>
+          <img
+            width="480"
+            height="240"
+            src={ingredient.image}
+            alt={ingredient.name}
+            className={`mb-4 ${styles.ingredient__pic}`}
+          />
+          <p className={`mb-8 text text_type_main-medium ${styles.ingredient__name}`}>{ingredient.name}</p>
+          <ul className={`${styles.ingredient__list} mb-15`}>
+            <li className={`mr-5 text_color_inactive ${styles.ingredient__list_el}`}>
+              <p className="text text_type_main-default">Калории,ккал</p>
+              <span className="text text_type_digits-default">{ingredient.calories}</span>
+            </li>
+            <li className={`mr-5 text_color_inactive ${styles.ingredient__list_el}`}>
+              <p className="text text_type_main-default">Белки, г</p>
+              <span className="text text_type_digits-default">{ingredient.proteins}</span>
+            </li>
+            <li className={`mr-5 text_color_inactive ${styles.ingredient__list_el}`}>
+              <p className="text text_type_main-default">Жиры, г</p>
+              <span className="text text_type_digits-default">{ingredient.fat}</span>
+            </li>
+            <li className={`text_color_inactive ${styles.ingredient__list_el}`}>
+              <p className="text text_type_main-default">Углеводы, г</p>
+              <span className="text text_type_digits-default">{ingredient.carbohydrates}</span>
+            </li>
+          </ul>
+        </div>
+      )}
     </>
   );
 }
-
-export default IngredientDetails;
