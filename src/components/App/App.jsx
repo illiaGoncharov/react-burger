@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 
@@ -29,6 +29,8 @@ import IngredientDetails from "../IngredientDetails/IngredientDetails";
 import { OnlyAuth, OnlyUnAuth } from "../ProtectedRoute/ProtectedRoute";
 
 function App() {
+  const [wasOnForgotPassword, setWasOnForgotPassword] = useState(false);
+
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
@@ -55,11 +57,25 @@ function App() {
               <Route path="/register" element={<OnlyUnAuth component={<RegisterPage />} />} />
               <Route
                 path="/forgot-password"
-                element={<OnlyUnAuth component={<ForgotPasswordPage />} />}
+                element={
+                  <OnlyUnAuth
+                    component={<ForgotPasswordPage />}
+                    onEnter={() => setWasOnForgotPassword(true)}
+                  />}
               />
               <Route
                 path="/reset-password"
-                element={<OnlyUnAuth component={<ResetPasswordPage />} />}
+                element={
+                  <OnlyUnAuth
+                    component={<ResetPasswordPage />}
+                    onEnter={() => {
+                      if (!wasOnForgotPassword) {
+                        // Редирект пользователя обратно на страницу forgot-password
+                        navigate("/forgot-password");
+                      }
+                    }}
+                  />
+                }
               />
               <Route path="/profile" element={<OnlyAuth component={<ProfilePage />} />}>
                 <Route path="user" element={<OnlyAuth component={<Profile />} />}></Route>

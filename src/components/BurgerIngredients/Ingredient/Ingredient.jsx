@@ -15,6 +15,7 @@ export const Ingredient = ({ el }) => {
   const count = useMemo(() => {
     const ingredients = [...dataConstructor, ...dataBun];
     return ingredients.reduce((acc, item) => (item._id === el._id ? acc + 1 : acc), 0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataConstructor, dataBun]);
 
   // Определяем ингредиент как перетаскиваемый элемент
