@@ -1,22 +1,31 @@
-import { useState } from "react";
+// import { useState } from "react";
 
 import {
   Input,
-  Button,
+  Button, 
+  PasswordInput, 
+  EmailInput
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
 import styles from "./RegisterPage.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { regUser } from "../../services/actions/userData";
 import { useDispatch, useSelector } from "react-redux";
-import { usePasswordShow } from "../../utils/utility";
+// import { usePasswordShow } from "../../utils/utility";
 
 import PropTypes from "prop-types";
+import { useForm } from '../../hooks/useForm';
 
 const RegisterPage = () => {
-  const[loginValue, setLoginValue] = useState("");
-  const [passwordValue, setPasswordValue] = useState("");
-  const [nameValue, setNameValue] = useState("");
+  const { values, handleChange, setValues } = useForm({
+    loginValue: "",
+    passwordValue: "",
+    nameValue: "",
+  });
+
+  // const[loginValue, setLoginValue] = useState("");
+  // const [passwordValue, setPasswordValue] = useState("");
+  // const [nameValue, setNameValue] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -26,12 +35,14 @@ const RegisterPage = () => {
     e.preventDefault();
 
     if (userRegSuccess) {
-      setLoginValue("");
-      setPasswordValue("");
-      setNameValue("");
+      // setLoginValue("");
+      // setPasswordValue("");
+      // setNameValue("");
+      setValues({ loginValue: "", passwordValue: "", nameValue: "" });
       navigate("/login", { replace: true });
     } else {
-      dispatch(regUser(loginValue, passwordValue, nameValue));
+      // dispatch(regUser(loginValue, passwordValue, nameValue));
+      dispatch(regUser(values.loginValue, values.passwordValue, values.nameValue));
     }
   };
 
@@ -46,26 +57,30 @@ const RegisterPage = () => {
         <h2 className="text text_type_main-medium">Регистрация</h2>
         <div className="mb-6 mt-6">
           <Input
-            onChange={(e) => {
-              setNameValue(e.target.value);
-            }}
+            // onChange={(e) => {
+            //   setNameValue(e.target.value);
+            // }}
+            onChange={handleChange}
+            name="nameValue"
             type="text"
-            value={nameValue}
+            value={values.nameValue}
             placeholder="Имя"
           ></Input>
         </div>
         <div className="mb-6">
-          <Input
-            onChange={(e) => {
-              setLoginValue(e.target.value);
-            }}
+          <EmailInput
+            // onChange={(e) => {
+            //   setLoginValue(e.target.value);
+            // }}
+            onChange={handleChange}
+            name="loginValue"
             type="email"
-            value={loginValue}
+            value={values.loginValue}
             placeholder="E-mail"
-          ></Input>
+          />
         </div>
         <div className="mb-6">
-          <Input
+          {/* <Input
             onChange={(e) => {
               setPasswordValue(e.target.value);
             }}
@@ -74,7 +89,14 @@ const RegisterPage = () => {
             icon={`${usePasswordShow.icon}`}
             placeholder="Пароль"
             onIconClick={() => usePasswordShow.showPassword()}
-          ></Input>
+          ></Input> */}
+          <PasswordInput
+            onChange={handleChange}
+            name="passwordValue"
+            type="password"
+            value={values.passwordValue}
+            placeholder="Пароль"
+          />
         </div>
         <div className={`${styles.register__button} mb-20`}>
           <Button htmlType="submit" type="primary" size="large">

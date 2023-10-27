@@ -1,8 +1,9 @@
-import styles from "./ListElement.module.css";
 import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useSelector } from "react-redux";
 
-const ListElement = ({ props }) => {
+import styles from "./FeedList.module.css";
+
+const FeedList = ({ props }) => {
   const ingredientsData = useSelector((store) => store.ingredients.ingredients);
 
   const elements = props.ingredients
@@ -35,4 +36,4 @@ const ListElement = ({ props }) => {
   );
 };
 
-export default ListElement;
+export default FeedList;

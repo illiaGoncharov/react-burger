@@ -11,6 +11,8 @@ import {
   wsOrdersFeedConnectionStop,
 } from "../../services/actions/wsOrdersFeedData";
 
+import { WS_BASE_URL } from "./../../utils/constants";
+
 const FeedOrderDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -19,7 +21,7 @@ const FeedOrderDetails = () => {
 
   useEffect(() => {
     dispatch(
-      wsOrdersFeedConnectionStart("wss://norma.nomoreparties.space/orders/all")
+      wsOrdersFeedConnectionStart(`${WS_BASE_URL}/all`)
     );
     return () => {
       dispatch(wsOrdersFeedConnectionStop());

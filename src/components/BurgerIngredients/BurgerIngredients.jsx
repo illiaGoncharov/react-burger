@@ -48,10 +48,11 @@ function BurgerIngredients() {
             key={el._id}
           >
             <ul className={styles.ingredient__list}>
-              <Ingredient el={el}></Ingredient>
+              <Ingredient el={el} />
             </ul>
           </Link>
         );
+      return null;
     });
   }
 

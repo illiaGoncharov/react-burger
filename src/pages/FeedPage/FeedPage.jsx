@@ -3,11 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./FeedPage.module.css";
-import ListElement from "./ListElement/ListElement";
+import ListElement from "../FeedList/FeedList";
 import {
   wsOrdersFeedConnectionStart,
   wsOrdersFeedConnectionStop,
 } from "../../services/actions/wsOrdersFeedData";
+
+import { WS_BASE_URL } from "./../../utils/constants";
 
 const FeedPage = () => {
   const dispatch = useDispatch();
@@ -15,7 +17,9 @@ const FeedPage = () => {
   const { orders, totalToday, total } = useSelector((store) => store.wsOrdersFeed);
 
   useEffect(() => {
-    dispatch(wsOrdersFeedConnectionStart("wss://norma.nomoreparties.space/orders/all"));
+    dispatch(
+      wsOrdersFeedConnectionStart(`${WS_BASE_URL}/all`)
+    );
     return () => {
       dispatch(wsOrdersFeedConnectionStop());
     };

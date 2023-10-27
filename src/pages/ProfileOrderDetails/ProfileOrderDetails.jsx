@@ -10,13 +10,17 @@ import {
   wsProfileOrdersConnectionStart,
 } from "../../services/actions/wsProfileOrdersData";
 
+import { WS_BASE_URL } from "./../../utils/constants";
+
 const ProfileOrderDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
 
   useEffect(() => {
     const token = (localStorage.getItem("accessToken") || "").replace("Bearer ", "");
-    dispatch(wsProfileOrdersConnectionStart(`wss://norma.nomoreparties.space/orders?token=${token}`));
+    dispatch(
+      wsProfileOrdersConnectionStart(`${WS_BASE_URL}/orders?token=${token}`)
+    );
 
     return () => {
       dispatch(wsProfileOrdersConnectionStop());

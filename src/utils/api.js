@@ -1,8 +1,28 @@
-const api = "https://norma.nomoreparties.space/api/";
+const BASE_URL = "https://norma.nomoreparties.space/api/";
+
+const checkResponse = (response) => {
+  if (response.ok) {
+    return response.json();
+  }
+  return Promise.reject(`Ошибка ${response.status}`);
+};
+
+const checkSuccess = (response) => {
+  if (response && response.success) {
+    return response;
+  }
+  return Promise.reject(`Ответ не success: ${response}`);
+};
+
+const request = (endpoint, options) => {
+  return fetch(`${BASE_URL}${endpoint}`, options)
+    .then(checkResponse)
+    .then(checkSuccess);
+};
 
 export const refreshToken = async () => {
   try {
-    const response = await fetch(`${api}auth/token`, {
+    const response = await request("auth/token", {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
@@ -12,44 +32,38 @@ export const refreshToken = async () => {
       }),
     });
 
-    if (!response.ok) {
-      return Promise.reject("Failed to refresh token");
-    }
-
-    const data = await response.json();
-    localStorage.setItem("accessToken", data.accessToken);
-    return data.accessToken;
+    const { accessToken } = response;
+    localStorage.setItem("accessToken", accessToken);
+    return accessToken;
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
-const fetchWithRefresh = async (url, options, attempts = 2) => {
+export const fetchWithRefresh = async (endpoint, options) => {
   try {
-    const response = await fetch(url, options);
-
-    if (!response.ok && response.status === 401 && attempts > 0) {
-      const newAccessToken = await refreshToken();
-      if (newAccessToken) {
-        options.headers.authorization = newAccessToken;
-        return fetchWithRefresh(url, options, attempts - 1);
-      } else {
-        return Promise.reject("Failed to refresh token");
-      }
-    }
-
-    if (!response.ok) {
-      return Promise.reject("Request failed");
-    }
-
-    return response.json();
+    const response = await fetch(endpoint, options);
+    return await checkResponse(response);
   } catch (error) {
-    return Promise.reject(error);
+    console.log(error);
+    if (error.message === "jwt expired") {
+      const refreshData = await refreshToken();
+      if (!refreshData.success) {
+        return Promise.reject(refreshData);
+      }
+      localStorage.setItem("refreshToken", refreshData.refreshToken);
+      localStorage.setItem("accessToken", refreshData.accessToken);
+      options.headers.authorization = refreshData.accessToken;
+      const response = await fetch(endpoint, options);
+      return await checkResponse(response);
+    } else {
+      return Promise.reject(error);
+    }
   }
 };
 
 export const apiIngredients = () => {
-  return fetchWithRefresh(api + "ingredients", {
+  return request("ingredients", {
     method: "GET",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
@@ -59,20 +73,22 @@ export const apiIngredients = () => {
 };
 
 export const apiOrder = (ingredientsData) => {
-  return fetchWithRefresh(api + "orders", {
+  return request("orders", {
     method: "POST",
     body: JSON.stringify({
       ingredients: ingredientsData.map((el) => el._id),
     }),
     headers: {
       "Content-Type": "application/json",
-      authorization: localStorage.getItem("accessToken"),
+      Authorization: localStorage.getItem("accessToken"),
     },
+  }).then((response) => {
+    return checkResponse(response);
   });
 };
 
 export const apiUserReg = (email, password, name) => {
-  return fetchWithRefresh(api + "auth/register", {
+  return request("auth/register", {
     method: "POST",
     body: JSON.stringify({
       email: email,
@@ -82,11 +98,13 @@ export const apiUserReg = (email, password, name) => {
     headers: {
       "Content-Type": "application/json",
     },
+  }).then((res) => {
+    return checkResponse(res);
   });
 };
 
 export const apiUserLogIn = (email, password) => {
-  return fetchWithRefresh(api + "auth/login", {
+  return request("auth/login", {
     method: "POST",
     body: JSON.stringify({
       email: email,
@@ -95,11 +113,13 @@ export const apiUserLogIn = (email, password) => {
     headers: {
       "Content-Type": "application/json",
     },
+  }).then((response) => {
+    return checkResponse(response);
   });
 };
 
 export const apiUserLogOut = () => {
-  return fetchWithRefresh(api + "auth/logout", {
+  return request("auth/logout", {
     method: "POST",
     body: JSON.stringify({
       token: localStorage.getItem("refreshToken"),
@@ -107,11 +127,13 @@ export const apiUserLogOut = () => {
     headers: {
       "Content-Type": "application/json",
     },
+  }).then((response) => {
+    return checkResponse(response);
   });
 };
 
 export const apiGetUser = () => {
-  return fetchWithRefresh(api + "auth/user", {
+  return fetchWithRefresh(`${BASE_URL}auth/user`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
@@ -121,28 +143,31 @@ export const apiGetUser = () => {
 };
 
 export const apiForgotPassword = (email) => {
-  return fetchWithRefresh(api + "password-reset", {
+  return request("password-reset", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      email: email,
+    headers: { "Content-Type": "application/json",
+    email: email,
     },
+  }).then((response) => {
+    return checkResponse(response);
   });
 };
 
 export const apiResetPassword = (password, token) => {
-  return fetchWithRefresh(api + "password-reset/reset", {
+  return request("password-reset/reset", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       password: password,
       token: token,
     },
+  }).then((response) => {
+    return checkResponse(response);
   });
 };
 
 export const apiPostUser = (email, name) => {
-  return fetchWithRefresh(api + "auth/user", {
+  return fetchWithRefresh(`${BASE_URL}auth/user`, {
     method: "PATCH",
     body: JSON.stringify({
       token: localStorage.getItem("refreshToken"),
@@ -153,5 +178,5 @@ export const apiPostUser = (email, name) => {
       "Content-Type": "application/json;charset=utf-8",
       authorization: localStorage.getItem("accessToken"),
     },
-  });
+  }).catch((error) => console.log(error));
 };

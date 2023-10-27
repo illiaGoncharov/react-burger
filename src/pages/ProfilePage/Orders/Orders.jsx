@@ -9,6 +9,8 @@ import {
   wsProfileOrdersConnectionStop,
 } from "../../../services/actions/wsProfileOrdersData";
 
+import { WS_BASE_URL } from "./../../../utils/constants";
+
 export const Orders = () => {
   const dispatch = useDispatch();
   const orders = useSelector((store) => store.wsProfileOrders.orders);
@@ -16,7 +18,9 @@ export const Orders = () => {
 
   useEffect(() => {
     const token = (localStorage.getItem("accessToken") || "").replace("Bearer ", "");
-    dispatch(wsProfileOrdersConnectionStart(`wss://norma.nomoreparties.space/orders?token=${token}`));
+    dispatch(
+      wsProfileOrdersConnectionStart(`${WS_BASE_URL}/orders?token=${token}`)
+      );
 
     return () => {
       dispatch(wsProfileOrdersConnectionStop());

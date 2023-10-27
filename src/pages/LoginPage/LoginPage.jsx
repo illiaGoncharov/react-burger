@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
 
@@ -9,25 +9,25 @@ import { logInUser } from "../../services/actions/userData";
 import { usePasswordShow } from "../../utils/utility";
 
 const LoginPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [loginValue, setLoginValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
-
-  const passwordShow = usePasswordShow();
-
-  const dispatch = useDispatch();
-
+  
   const userLogInSuccess = useSelector((store) => {
     return store.userData.logInUserSuccess;
   });
 
+  const passwordShow = usePasswordShow();
+
   const logIn = (e) => {
     e.preventDefault();
     dispatch(logInUser(loginValue, passwordValue));
-
-    // Если успешно вошли в систему, сбросьте значения полей ввода
     if (userLogInSuccess) {
       setLoginValue("");
       setPasswordValue("");
+      navigate(-1);
     }
   };
 
