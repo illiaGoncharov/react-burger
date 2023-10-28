@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 
-import { getIngredients } from "../../services/actions/ingredientsData";
-import { getUserData } from "../../services/actions/userData";
+import { getIngredients } from "../../services/actions/ingredientsActions";
+import { getUserData } from "../../services/actions/userActions";
 
 import {
   FeedPage,

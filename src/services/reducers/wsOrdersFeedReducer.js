@@ -5,7 +5,7 @@ import {
   WS_ORDERS_FEED_CONNECTION_CLOSED,
   WS_ORDERS_FEED_GET_MESSAGE,
   WS_ORDERS_FEED_CONNECTION_STOP,
-} from "../actions/wsOrdersFeedData.js";
+} from "../actions/wsOrdersFeedActions.js";
 
 const initialState = {
   wsConnected: false,

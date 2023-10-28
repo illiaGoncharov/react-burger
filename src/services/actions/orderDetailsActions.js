@@ -1,5 +1,5 @@
 import { apiOrder } from "../../utils/api";
-import { DELETE_ALL_INRGEDIENTS } from "./constructorIngredientsData";
+import { DELETE_ALL_INRGEDIENTS } from "./constructorIngredientsActions";
 
 export const GET_ORDER_FAILED = "GET_ORDER_FAILED";
 export const GET_ORDER_REQUEST = "GET_ORDER_REQUEST";

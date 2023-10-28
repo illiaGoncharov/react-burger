@@ -1,7 +1,7 @@
 import {
   DELETE_INFO_INGREDIENT,
   GET_INFO_INGREDIENT,
-} from "../actions/infoIngredientData";
+} from "../actions/infoIngredientActions";
 
 const initialState = {
   infoIngredient: [],

@@ -15,7 +15,7 @@ import {
   POST_USER_DATA_REQUEST,
   POST_USER_DATA_FAILED,
   POST_USER_DATA_SUCCESS,
-} from "../actions/userData";
+} from "../actions/userActions";
 
 const initialState = {
   userData: {},

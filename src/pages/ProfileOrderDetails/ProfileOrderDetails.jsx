@@ -8,7 +8,7 @@ import styles from "./ProfileOrderDetails.module.css";
 import {
   wsProfileOrdersConnectionStop,
   wsProfileOrdersConnectionStart,
-} from "../../services/actions/wsProfileOrdersData";
+} from "../../services/actions/wsProfileOrdersActions";
 
 import { WS_BASE_URL } from "./../../utils/constants";
 

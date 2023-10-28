@@ -2,7 +2,7 @@ import styles from "./Profile.module.css";
 import { Input } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { postUserData } from "../../../services/actions/userData";
+import { postUserData } from "../../../services/actions/userActions";
 export const Profile = () => {
   const dispatch = useDispatch();
 

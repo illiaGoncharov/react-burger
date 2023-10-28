@@ -9,7 +9,7 @@ import {
 
 import styles from "./RegisterPage.module.css";
 import { Link, useNavigate } from "react-router-dom";
-import { regUser } from "../../services/actions/userData";
+import { regUser } from "../../services/actions/userActions";
 import { useDispatch, useSelector } from "react-redux";
 // import { usePasswordShow } from "../../utils/utility";
 

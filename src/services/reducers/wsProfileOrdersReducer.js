@@ -5,7 +5,7 @@ import {
   WS_PROFILE_ORDERS_CONNECTION_CLOSED,
   WS_PROFILE_ORDERS_GET_MESSAGE,
   WS_PROFILE_ORDERS_CONNECTION_STOP,
-} from "../actions/wsProfileOrdersData";
+} from "../actions/wsProfileOrdersActions";
 
 const initialState = {
   wsConnected: false,

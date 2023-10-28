@@ -7,6 +7,7 @@ const checkResponse = (response) => {
   return Promise.reject(`Ошибка ${response.status}`);
 };
 
+// Функция для проверки успешного ответа
 const checkSuccess = (response) => {
   if (response && response.success) {
     return response;
@@ -14,12 +15,14 @@ const checkSuccess = (response) => {
   return Promise.reject(`Ответ не success: ${response}`);
 };
 
+// Функция для отправки запросов
 const request = (endpoint, options) => {
   return fetch(`${BASE_URL}${endpoint}`, options)
     .then(checkResponse)
     .then(checkSuccess);
 };
 
+// Обновление токена
 export const refreshToken = async () => {
   try {
     const response = await request("auth/token", {
@@ -40,10 +43,12 @@ export const refreshToken = async () => {
   }
 };
 
+// Выполнение запроса с возможностью обновления токена
 export const fetchWithRefresh = async (endpoint, options) => {
   try {
     const response = await fetch(endpoint, options);
-    return await checkResponse(response);
+    // return await checkResponse(response);
+    return response;
   } catch (error) {
     console.log(error);
     if (error.message === "jwt expired") {
@@ -55,13 +60,14 @@ export const fetchWithRefresh = async (endpoint, options) => {
       localStorage.setItem("accessToken", refreshData.accessToken);
       options.headers.authorization = refreshData.accessToken;
       const response = await fetch(endpoint, options);
-      return await checkResponse(response);
+      return response;
     } else {
       return Promise.reject(error);
     }
   }
 };
 
+// Запрос списка ингредиентов
 export const apiIngredients = () => {
   return request("ingredients", {
     method: "GET",
@@ -72,6 +78,7 @@ export const apiIngredients = () => {
   });
 };
 
+// Создание заказа
 export const apiOrder = (ingredientsData) => {
   return request("orders", {
     method: "POST",
@@ -82,11 +89,10 @@ export const apiOrder = (ingredientsData) => {
       "Content-Type": "application/json",
       Authorization: localStorage.getItem("accessToken"),
     },
-  }).then((response) => {
-    return checkResponse(response);
   });
 };
 
+// Регистрация пользователя
 export const apiUserReg = (email, password, name) => {
   return request("auth/register", {
     method: "POST",
@@ -98,11 +104,10 @@ export const apiUserReg = (email, password, name) => {
     headers: {
       "Content-Type": "application/json",
     },
-  }).then((res) => {
-    return checkResponse(res);
   });
 };
 
+// Вход пользователя
 export const apiUserLogIn = (email, password) => {
   return request("auth/login", {
     method: "POST",
@@ -113,11 +118,10 @@ export const apiUserLogIn = (email, password) => {
     headers: {
       "Content-Type": "application/json",
     },
-  }).then((response) => {
-    return checkResponse(response);
   });
 };
 
+// Выход пользователя
 export const apiUserLogOut = () => {
   return request("auth/logout", {
     method: "POST",
@@ -127,32 +131,31 @@ export const apiUserLogOut = () => {
     headers: {
       "Content-Type": "application/json",
     },
-  }).then((response) => {
-    return checkResponse(response);
   });
 };
 
+// Получение информации о пользователе
 export const apiGetUser = () => {
   return fetchWithRefresh(`${BASE_URL}auth/user`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
-      authorization: localStorage.getItem("accessToken"),
+      Authorization: localStorage.getItem("accessToken"),
     },
   });
 };
 
+// Запрос на сброс пароля
 export const apiForgotPassword = (email) => {
   return request("password-reset", {
     method: "POST",
     headers: { "Content-Type": "application/json",
     email: email,
     },
-  }).then((response) => {
-    return checkResponse(response);
   });
 };
 
+// Сброс пароля
 export const apiResetPassword = (password, token) => {
   return request("password-reset/reset", {
     method: "POST",
@@ -161,11 +164,10 @@ export const apiResetPassword = (password, token) => {
       password: password,
       token: token,
     },
-  }).then((response) => {
-    return checkResponse(response);
   });
 };
 
+// Обновление информации о пользователе
 export const apiPostUser = (email, name) => {
   return fetchWithRefresh(`${BASE_URL}auth/user`, {
     method: "PATCH",
@@ -176,7 +178,7 @@ export const apiPostUser = (email, name) => {
     }),
     headers: {
       "Content-Type": "application/json;charset=utf-8",
-      authorization: localStorage.getItem("accessToken"),
+      Authorization: localStorage.getItem("accessToken"),
     },
   }).catch((error) => console.log(error));
 };

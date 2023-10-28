@@ -2,8 +2,8 @@ import styles from "./ProfilePage.module.css";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { logOutUser } from "../../services/actions/userData";
-import { getUserData } from "../../services/actions/userData";
+import { logOutUser } from "../../services/actions/userActions";
+import { getUserData } from "../../services/actions/userActions";
 
 export const ProfilePage = () => {
   const dispatch = useDispatch();

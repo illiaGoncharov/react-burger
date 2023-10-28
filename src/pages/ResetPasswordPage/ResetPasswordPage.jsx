@@ -5,10 +5,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { apiResetPassword } from "../../utils/api"; 
 import { usePasswordShow } from "../../utils/utility";
 
+// import { useForm } from '../../hooks/useForm';
+
 const ResetPasswordPage = () => {
   const [passwordValue, setPasswordValue] = useState("");
   const [token, setToken] = useState("");
   const navigate = useNavigate();
+
+  // const { values, handleChange, setValues } = useForm({
+  //   loginValue: "",
+  //   passwordValue: "",
+  //   nameValue: "",
+  // });
 
   const submit = (e) => {
     e.preventDefault();

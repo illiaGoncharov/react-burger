@@ -13,11 +13,11 @@ import {
 
 import styles from "./BurgerConstructor.module.css";
 
-import { getApiOrder } from "../../services/actions/orderDetailsData";
+import { getApiOrder } from "../../services/actions/orderDetailsActions";
 import {
   deleteIngredient,
   postIngredient,
-} from "../../services/actions/constructorIngredientsData";
+} from "../../services/actions/constructorIngredientsActions";
 
 import { ConstructorElements } from "./ConstructorElements/ConstructorElements";
 

@@ -2,7 +2,7 @@ import {
   GET_ORDER_FAILED,
   GET_ORDER_REQUEST,
   GET_ORDER_SUCCESS,
-} from "../actions/orderDetailsData";
+} from "../actions/orderDetailsActions";
 
 const initialState = {
   orderNumber: null,

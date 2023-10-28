@@ -7,7 +7,7 @@ import ListElement from "./ListElement/ListElement";
 import {
   wsProfileOrdersConnectionStart,
   wsProfileOrdersConnectionStop,
-} from "../../../services/actions/wsProfileOrdersData";
+} from "../../../services/actions/wsProfileOrdersActions";
 
 import { WS_BASE_URL } from "./../../../utils/constants";
 

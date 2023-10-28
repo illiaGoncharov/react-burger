@@ -4,7 +4,7 @@ import {
   NEW_ARRAY_INGREDIENT,
   MOVE_INGREDIENT,
   DELETE_ALL_INRGEDIENTS,
-} from "../actions/constructorIngredientsData";
+} from "../actions/constructorIngredientsActions";
 import update from "immutability-helper";
 
 const initialState = {

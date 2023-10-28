@@ -7,7 +7,7 @@ import ListElement from "../FeedList/FeedList";
 import {
   wsOrdersFeedConnectionStart,
   wsOrdersFeedConnectionStop,
-} from "../../services/actions/wsOrdersFeedData";
+} from "../../services/actions/wsOrdersFeedActions";
 
 import { WS_BASE_URL } from "./../../utils/constants";
 

@@ -11,7 +11,7 @@ import {
 
 import styles from "./ConstructorElements.module.css";
 
-import { moveIngredient } from "../../../services/actions/constructorIngredientsData";
+import { moveIngredient } from "../../../services/actions/constructorIngredientsActions";
 
 export function ConstructorElements({ el, index, func }) {
   const dispatch = useDispatch();
