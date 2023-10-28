@@ -22,7 +22,6 @@ const RegisterPage = () => {
     passwordValue: "",
     nameValue: "",
   });
-
   // const[loginValue, setLoginValue] = useState("");
   // const [passwordValue, setPasswordValue] = useState("");
   // const [nameValue, setNameValue] = useState("");
