@@ -1,4 +1,4 @@
-import { apiOrder } from "../../utils/api";
+import { apiPlaceOrder } from "../../utils/api";
 import { DELETE_ALL_INRGEDIENTS } from "./constructorIngredientsActions";
 
 export const GET_ORDER_FAILED = "GET_ORDER_FAILED";
@@ -8,7 +8,7 @@ export const GET_ORDER_SUCCESS = "GET_ORDER_SUCCESS";
 export const getApiOrder = (ingredientsData) => {
   return function (dispatch) {
     dispatch({ type: GET_ORDER_REQUEST });
-    apiOrder(ingredientsData)
+    apiPlaceOrder(ingredientsData)
       .then((data) => {
         if (data && data.success) {
           dispatch({

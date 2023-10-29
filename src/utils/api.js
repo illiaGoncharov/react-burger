@@ -1,4 +1,11 @@
-const BASE_URL = "https://norma.nomoreparties.space/api/";
+import { BASE_URL } from "./constants";
+import {
+  getAccessToken,
+  getRefreshToken,
+  setCookieFromResponce,
+} from './🍪';
+
+const defaultHeader = { 'Content-Type': 'application/json; charset=UTF-8' };
 
 const checkResponse = (response) => {
   if (response.ok) {
@@ -22,136 +29,153 @@ const request = (endpoint, options) => {
     .then(checkSuccess);
 };
 
-// Обновление токена
-export const refreshToken = async () => {
-  try {
-    const response = await request("auth/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-      },
-      body: JSON.stringify({
-        token: localStorage.getItem("refreshToken"),
-      }),
-    });
-
-    const { accessToken } = response;
-    localStorage.setItem("accessToken", accessToken);
-    return accessToken;
-  } catch (error) {
-    return Promise.reject(error);
-  }
-};
-
-// Выполнение запроса с возможностью обновления токена
-export const fetchWithRefresh = async (endpoint, options) => {
-  try {
-    const response = await fetch(endpoint, options);
-    // return await checkResponse(response);
-    return response;
-  } catch (error) {
-    console.log(error);
-    if (error.message === "jwt expired") {
-      const refreshData = await refreshToken();
-      if (!refreshData.success) {
-        return Promise.reject(refreshData);
-      }
-      localStorage.setItem("refreshToken", refreshData.refreshToken);
-      localStorage.setItem("accessToken", refreshData.accessToken);
-      options.headers.authorization = refreshData.accessToken;
-      const response = await fetch(endpoint, options);
-      return response;
-    } else {
-      return Promise.reject(error);
-    }
-  }
-};
-
 // Запрос списка ингредиентов
-export const apiIngredients = () => {
-  return request("ingredients", {
+export const apiGetIngredients = () => {
+  return request("/ingredients", {
     method: "GET",
     headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: localStorage.getItem("accessToken"),
-    },
+      ...defaultHeader
+    }
   });
 };
 
 // Создание заказа
-export const apiOrder = (ingredientsData) => {
-  return request("orders", {
+export const apiPlaceOrder = (ingredientsData) => {
+  return request("/orders", {
     method: "POST",
-    body: JSON.stringify({
-      ingredients: ingredientsData.map((el) => el._id),
-    }),
     headers: {
-      "Content-Type": "application/json",
-      Authorization: localStorage.getItem("accessToken"),
+      ...defaultHeader,
+      Authorization: 'Bearer ' + getAccessToken(),
     },
+    body: JSON.stringify({
+      // ingredients: ingredientsData.map((el) => el._id),
+      ingredients: ingredientsData,
+    }),
   });
 };
 
+// Загрузка деталей заказа
+export const apiGetOrderDetails = (orderNum) => {
+  return request(`/orders/${orderNum}`, {
+    method: "GET",
+    headers: {
+      ...defaultHeader,
+      Authorization: 'Bearer ' + getAccessToken(),
+    }
+  });
+}
+
 // Регистрация пользователя
 export const apiUserReg = (email, password, name) => {
-  return request("auth/register", {
+  return request("/auth/register", {
     method: "POST",
+    headers: {
+      ...defaultHeader,
+    },
     body: JSON.stringify({
       email: email,
       password: password,
       name: name,
     }),
-    headers: {
-      "Content-Type": "application/json",
-    },
   });
+};
+
+// Обновление информации о пользователе
+export const apiUpdateUser = (email, name) => {
+  return request("/auth/user", {
+    method: "PATCH",
+    headers: {
+      ...defaultHeader,
+      Authorization: 'Bearer ' + getAccessToken(),
+    },
+    body: JSON.stringify({
+      email: email,
+      name: name,
+      token: getRefreshToken(),
+    }),
+  }).catch((error) => console.log(error));
 };
 
 // Вход пользователя
 export const apiUserLogIn = (email, password) => {
-  return request("auth/login", {
+  return request("/auth/login", {
     method: "POST",
+    headers: {
+      ...defaultHeader,
+    },
     body: JSON.stringify({
       email: email,
       password: password,
     }),
-    headers: {
-      "Content-Type": "application/json",
-    },
+  }).then((data) => {
+    setCookieFromResponce(data);
+    return Promise.resolve(data);
   });
 };
 
 // Выход пользователя
 export const apiUserLogOut = () => {
-  return request("auth/logout", {
+  return request("/auth/logout", {
     method: "POST",
-    body: JSON.stringify({
-      token: localStorage.getItem("refreshToken"),
-    }),
     headers: {
-      "Content-Type": "application/json",
+      ...defaultHeader,
     },
+    body: JSON.stringify({
+      token: getRefreshToken(),
+    }),
   });
 };
 
 // Получение информации о пользователе
 export const apiGetUser = () => {
-  return fetchWithRefresh(`${BASE_URL}auth/user`, {
+  return request("/auth/user", {
     method: "GET",
     headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      Authorization: localStorage.getItem("accessToken"),
+     ...defaultHeader,
+      Authorization: 'Bearer ' + getAccessToken(),
     },
   });
 };
+
+// Обновление токена
+export const refreshToken = () => {
+  return request("/auth/user", {
+    method: "POST",
+    headers: {
+      ...defaultHeader,
+    },
+    body: JSON.stringify({
+      token: getRefreshToken(),
+    }),
+  });
+}
+
+// Получение данных пользователя с обновлением токена
+export function apiGetUserWithRefresh() {
+  return apiGetUser().catch((error) => {
+    console.log(error);
+    return refreshToken()
+      .then((data) => {
+        setCookieFromResponce(data);
+        return apiGetUser();
+      })
+      .catch((error) => {
+        console.log(error);
+        return Promise.reject(error);
+      });
+  });
+}
 
 // Запрос на сброс пароля
 export const apiForgotPassword = (email) => {
   return request("password-reset", {
     method: "POST",
-    headers: { "Content-Type": "application/json",
-    email: email,
+    headers: { 
+      ...defaultHeader,
     },
+    body: JSON.stringify({ 
+      email: email
+    }),
   });
 };
 
@@ -160,25 +184,11 @@ export const apiResetPassword = (password, token) => {
   return request("password-reset/reset", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      ...defaultHeader
+    },
+    body: JSON.stringify({
       password: password,
       token: token,
-    },
-  });
-};
-
-// Обновление информации о пользователе
-export const apiPostUser = (email, name) => {
-  return fetchWithRefresh(`${BASE_URL}auth/user`, {
-    method: "PATCH",
-    body: JSON.stringify({
-      token: localStorage.getItem("refreshToken"),
-      email: email,
-      name: name,
     }),
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      Authorization: localStorage.getItem("accessToken"),
-    },
-  }).catch((error) => console.log(error));
+  });
 };

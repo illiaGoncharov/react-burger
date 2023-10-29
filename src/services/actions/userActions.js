@@ -1,6 +1,6 @@
 import {
   apiGetUser,
-  apiPostUser,
+  apiUpdateUser,
   apiUserLogIn,
   apiUserLogOut,
   apiUserReg,
@@ -125,7 +125,7 @@ export const logOutUser = () => {
 export const postUserData = (login, name) => {
   return function (dispatch) {
     dispatch({ type: POST_USER_DATA_REQUEST });
-    apiPostUser(login, name)
+    apiUpdateUser(login, name)
       .then((res) => {
         if (res && res.success) {
           dispatch({
