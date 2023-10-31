@@ -13,7 +13,6 @@ export function getCookie(name) {
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-
 // Функция для установки значения куки
 export function setCookie(name, value, props) {
     props = props || {}; // По умолчанию props - пустой объект
@@ -39,7 +38,7 @@ export function setCookie(name, value, props) {
 }
 
 export function deleteCookie(name) {
-    setCookie(name, '', { expires: -1 }); // Устанавливаем куку с истекшим сроком действия
+    setCookie(name, '', { expires: new Date(0) }); // Устанавливаем куку с истекшим сроком действия
 }
 
 export function setCookieFromResponce(responce) {

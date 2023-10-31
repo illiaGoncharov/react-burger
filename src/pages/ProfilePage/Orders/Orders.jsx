@@ -9,8 +9,6 @@ import {
   wsProfileOrdersConnectionStop,
 } from "../../../services/actions/wsProfileOrdersActions";
 
-import { WS_BASE_URL } from "./../../../utils/constants";
-
 export const Orders = () => {
   const dispatch = useDispatch();
   const orders = useSelector((store) => store.wsProfileOrders.orders);
@@ -19,7 +17,7 @@ export const Orders = () => {
   useEffect(() => {
     const token = (localStorage.getItem("accessToken") || "").replace("Bearer ", "");
     dispatch(
-      wsProfileOrdersConnectionStart(`${WS_BASE_URL}/orders?token=${token}`)
+      wsProfileOrdersConnectionStart(`wss://norma.nomoreparties.space/orders?token=${token}`)
       );
 
     return () => {
@@ -46,6 +44,6 @@ export const Orders = () => {
       </ul>
     </section>
   ) : (
-    <h1 className="text text_type_main-large">Загрузка...</h1>
+    <h1 className="text text_type_main-large">hic sunt dracones</h1>
   );
 };

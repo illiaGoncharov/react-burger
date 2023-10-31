@@ -1,9 +1,10 @@
-import styles from "./ProfilePage.module.css";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { logOutUser } from "../../services/actions/userActions";
 import { getUserData } from "../../services/actions/userActions";
+
+import styles from "./ProfilePage.module.css";
 
 export const ProfilePage = () => {
   const dispatch = useDispatch();
@@ -17,15 +18,22 @@ export const ProfilePage = () => {
     dispatch(logOutUser());
   };
 
-  const navLinkStyles = {
-    link: styles.pp__navLink,
-    activeLink: styles.pp__activeNavLink,
-  };
-
   const navLinks = [
-    { to: "/profile/user", text: "Профиль", description: "В этом разделе вы можете изменить свои персональные данные" },
-    { to: "/profile/orders", text: "История заказов", description: "В этом разделе вы можете просмотреть свою историю заказов" },
-    { to: "/", text: "Выход", onClick: logOut },
+    { 
+      to: "/profile/user", 
+      text: "Профиль", 
+      description: "В этом разделе вы можете изменить свои персональные данные" 
+    },
+    { 
+      to: "/profile/orders", 
+      text: "История заказов", 
+      description: "В этом разделе вы можете просмотреть свою историю заказов" 
+},
+    { 
+      to: "/", 
+      text: "Выход", 
+      onClick: logOut 
+    },
   ];
   
   return (
@@ -36,7 +44,7 @@ export const ProfilePage = () => {
             key={index}
             to={navLink.to}
             className={({ isActive, isPending }) =>
-              isPending ? navLinkStyles.pp__link : isActive ? navLinkStyles.pp__activeLink : navLinkStyles.pp__link
+              isPending ? styles.pp__navLink : isActive ? styles.pp__navActiveLinks : styles.pp__navLink
             }
             onClick={navLink.onClick}
           >

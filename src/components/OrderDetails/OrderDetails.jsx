@@ -11,7 +11,7 @@ export default function OrderDetails() {
       {orderRequest ? (
         <>
           <header className={`${styles.header} mt-30 mb-8`}>
-            <p className={`${styles.details__data} text text_type_digits-large`}>XXXXXХ</p>
+            <p className={`${styles.details__data} text text_type_digits-large`}>XXXXX</p>
           </header>
           <p className="text text_type_main-default mb-2">Присвоение идентификатора...</p>
           <p className="text text_type_main-default text_color_inactive mb-30">

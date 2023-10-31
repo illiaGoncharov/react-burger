@@ -11,7 +11,7 @@ const checkResponse = (response) => {
   if (response.ok) {
     return response.json();
   }
-  return Promise.reject(`Ошибка ${response.status}`);
+  return Promise.reject({ message: `Ошибка ${response.status}`, status: response.status });
 };
 
 // Функция для проверки успешного ответа
@@ -19,14 +19,17 @@ const checkSuccess = (response) => {
   if (response && response.success) {
     return response;
   }
-  return Promise.reject(`Ответ не success: ${response}`);
+  return Promise.reject({ message: `Ответ не success: ${response}`, response });
 };
 
 // Функция для отправки запросов
 const request = (endpoint, options) => {
   return fetch(`${BASE_URL}${endpoint}`, options)
     .then(checkResponse)
-    .then(checkSuccess);
+    .then(checkSuccess).catch((error) => {
+      console.error('Произошла ошибка при выполнении запроса:', error);
+      return Promise.reject(error);
+    });
 };
 
 // Запрос списка ингредиентов
@@ -48,7 +51,6 @@ export const apiPlaceOrder = (ingredientsData) => {
       Authorization: 'Bearer ' + getAccessToken(),
     },
     body: JSON.stringify({
-      // ingredients: ingredientsData.map((el) => el._id),
       ingredients: ingredientsData,
     }),
   });
@@ -93,7 +95,10 @@ export const apiUpdateUser = (email, name) => {
       name: name,
       token: getRefreshToken(),
     }),
-  }).catch((error) => console.log(error));
+  }).catch((error) => {
+    console.error('Произошла ошибка при обновлении информации о пользователе:', error);
+    return Promise.reject(error);
+  });
 };
 
 // Вход пользователя
@@ -110,6 +115,9 @@ export const apiUserLogIn = (email, password) => {
   }).then((data) => {
     setCookieFromResponce(data);
     return Promise.resolve(data);
+  }).catch((error) => {
+    console.error('Произошла ошибка при входе пользователя:', error);
+    return Promise.reject(error);
   });
 };
 
@@ -123,6 +131,9 @@ export const apiUserLogOut = () => {
     body: JSON.stringify({
       token: getRefreshToken(),
     }),
+  }).catch((error) => {
+    console.error('Произошла ошибка при выходе пользователя:', error);
+    return Promise.reject(error);
   });
 };
 
@@ -153,14 +164,14 @@ export const refreshToken = () => {
 // Получение данных пользователя с обновлением токена
 export function apiGetUserWithRefresh() {
   return apiGetUser().catch((error) => {
-    console.log(error);
+    console.error('Произошла ошибка при получении данных пользователя:', error);
     return refreshToken()
       .then((data) => {
         setCookieFromResponce(data);
         return apiGetUser();
       })
       .catch((error) => {
-        console.log(error);
+        console.error('Произошла ошибка при обновлении токена и получении данных пользователя:', error);
         return Promise.reject(error);
       });
   });

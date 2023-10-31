@@ -1,7 +1,9 @@
 import { compose, createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
+
 import { wsOrdersFeedActions } from "./actions/wsOrdersFeedActions";
 import { wsProfileOrdersActions } from "./actions/wsProfileOrdersActions";
+
 import socketMiddleware from "./middleware/socketMiddleware";
 import { rootReducer } from "./reducers/rootReducer";
 
