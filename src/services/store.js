@@ -1,5 +1,6 @@
 import { compose, createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
+import logger from "redux-logger";
 
 import { wsOrdersFeedActions } from "./actions/wsOrdersFeedActions";
 import { wsProfileOrdersActions } from "./actions/wsProfileOrdersActions";
@@ -17,6 +18,7 @@ export const store = createStore(
   composeEnhancers(
     applyMiddleware(
       thunk,
+      // logger,
       socketMiddleware(wsOrdersFeedActions),
       socketMiddleware(wsProfileOrdersActions)
     )

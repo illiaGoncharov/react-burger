@@ -29,8 +29,18 @@
   overflow-y: auto;
   padding: 0;
 }
+.feed_order__main {
+  width: 670px;
+  display: flex;
+  flex-direction: column;
+  margin: 25px 25px 40px 25px;
+}
 
-.feed_order__list_element {
+.feed_order__orderNumber {
+  text-align: center;
+}
+
+.feed_order__listElement {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -38,11 +48,15 @@
   margin-bottom: 16px;
 }
 
-.feed_order__list_element:last-of-type {
+.feed_order__listElement:last-of-type {
   margin-bottom: 0;
 }
 
-.feed_order__pic {
+.feed_order__textActive {
+  color: rgba(0, 204, 204, 1);
+}
+
+.feed_order__image {
   width: 64px;
   height: 64px;
   object-fit: cover;
@@ -50,28 +64,33 @@
   border: 2px solid #801ab2;
 }
 
-.feed_order__pic_name {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
 .feed_order__price {
   display: flex;
   flex-direction: row;
 }
 
-.feed_order__time_price {
+.feed_order__imgAndName {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.feed_order__timeAndTotalPrice {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.feed_order__total_price {
+.feed_order__totalPrice {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
+
+.feed_order__textWrap {
+  white-space: normal;
+}
+
 .feed_order__loading {
   margin: auto;
 }

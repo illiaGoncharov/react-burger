@@ -9,7 +9,7 @@ import {
   wsOrdersFeedConnectionStop,
 } from "../../services/actions/wsOrdersFeedActions";
 
-import { WS_BASE_URL } from "./../../utils/constants";
+import { WS_BASE_URL } from "./../../utilities/constants";
 
 const FeedPage = () => {
   const dispatch = useDispatch();

@@ -11,11 +11,15 @@ import {
   wsOrdersFeedConnectionStop,
 } from "../../services/actions/wsOrdersFeedActions";
 
-import { WS_BASE_URL } from "./../../utils/constants";
+import { WS_BASE_URL } from "../../utilities/constants";
+import { extractAltFromURL } from "../../utilities/utilities";
+import { calculateTotalPrice } from "../../utilities/utilities";
 
 const FeedOrderDetails = () => {
+  // Извлекаем параметр 'id' из URL
   const { id } = useParams();
   const dispatch = useDispatch();
+  // Получаем данные о ингредиентах и заказах из Redux-состояния
   const ingredientsData = useSelector((store) => store.ingredients.ingredients);
   const orders = useSelector((store) => store.wsOrdersFeed.orders);
 
@@ -27,6 +31,23 @@ const FeedOrderDetails = () => {
       dispatch(wsOrdersFeedConnectionStop());
     };
   }, [dispatch]);
+
+  const orderElement = useMemo(() =>
+    orders?.find((element) => element._id === id
+    ), [orders]);
+
+  // Мемоизированное получение ингредиентов 
+  const ingredients = useMemo(() =>
+    orderElement?.ingredients.map(ingredient => ingredientsData.find(el => el._id === ingredient)
+    ), [orderElement, ingredientsData]);
+
+  // Мемоизированное вычисление общей стоимости 
+  const totalPrice = useMemo(() =>
+    ingredients?.reduce((accumulator, item) => item.price + accumulator, 0
+    ), [ingredients]);
+
+  // Прячем повторения 
+  const displayedIngredients = [];
 
   const getOrderStatusText = (status) => {
     switch (status) {
@@ -41,24 +62,7 @@ const FeedOrderDetails = () => {
     }
   };
 
-  const calculateTotalPrice = () => {
-    if (!ingredientsData || !orderElement) {
-      return 0;
-    }
-    return ingredientsData.reduce((accumulator, item) => {
-      const ingredient = orderElement.ingredients.find((el) => el === item._id);
-      if (ingredient) {
-        return item.price + accumulator;
-      }
-      return accumulator;
-    }, 0);
-  };
-
-  const orderElement = useMemo(() => {
-    return orders?.find((el) => {
-      return el._id === id;
-    });
-  }, [id, orders]);
+  // const formattedDate = new Date(orderElement.createdAt).toLocaleString();
 
   return orderElement ? (
     <main className={`${styles.feed_order__main}`}>
@@ -74,36 +78,38 @@ const FeedOrderDetails = () => {
       )}
       <h2 className="mb-6 text text_type_main-medium">Состав:</h2>
       <ul className={`${styles.feed_order__list} ${styles.feed_order__scroll} custom-scroll`}>
-        {ingredientsData &&
-          orderElement.ingredients.map((ingredient, index) => {
-            const el = ingredientsData.find((item) => item._id === ingredient);
-            if (el) {
-              return (
-                <li className={`${styles.feed_order__list_element} mr-6`} key={index}>
-                  <div className={styles.feed_order__pic_name}>
-                    <img alt=":)" src={el.image} className={`${styles.feed_order__pic} mr-4`} />
-                    <p className={`text text_type_main-default`}>{el.name}</p>
-                  </div>
-                  <div className={styles.feed_order__price}>
-                    <p className="text text_type_digits-default mr-2">{el.price}</p>
-                    <CurrencyIcon />
-                  </div>
-                </li>
-              );
-            }
-            return null;
-          })}
+        {ingredients.map((el, index) => {
+          if (!displayedIngredients.includes(el._id)) {
+            displayedIngredients.push(el._id);
+            const ingredientCount = orderElement.ingredients.filter(ingredientId => ingredientId === el._id).length;
+
+            return (
+              <li className={`${styles.feed_order__listElement} mr-6`} key={index}>
+                <div className={styles.feed_order__imgAndName}>
+                  <img alt={extractAltFromURL(el.image)} src={el.image} className={`${styles.feed_order__image} mr-4`} />
+                  <p className={`text text_type_main-default ${styles.feed_order__name}`}>{el.name}</p>
+                </div>
+                <div className={styles.feed_order__price}>
+                  <span className="text text_type_digits-default mr-2">{ingredientCount} x</span>
+                  <p className="text text_type_digits-default mr-2">{el.price}</p>
+                  <CurrencyIcon />
+                </div>
+              </li>
+            );
+          }
+          return null;
+        })}
       </ul>
-      <div className={styles.timeAndTotalPrice}>
+      <div className={styles.feed_order__timeAndTotalPrice}>
         <p className="text text_type_main-default text_color_inactive">{orderElement.createdAt}</p>
-        <div className={styles.totalPrice}>
-          <p className="text text_type_digits-default mr-2">{calculateTotalPrice()}</p>
+        <div className={styles.feed_order__totalPrice}>
+          <p className="text text_type_digits-default mr-2">{totalPrice}</p>
           <CurrencyIcon />
         </div>
       </div>
     </main>
   ) : (
-    <h1 className={`text text_type_main-large ${styles.loading}`}>Загрузка...</h1>
+    <h1 className={`text text_type_main-large ${styles.loading}`}>FeedOrderDetails...</h1>
   );
 };
 

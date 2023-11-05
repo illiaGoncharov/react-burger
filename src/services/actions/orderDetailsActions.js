@@ -1,4 +1,4 @@
-import { apiPlaceOrder } from "../../utils/api";
+import { apiPlaceOrder } from "../../utilities/api";
 import { DELETE_ALL_INRGEDIENTS } from "./constructorIngredientsActions";
 
 export const GET_ORDER_FAILED = "GET_ORDER_FAILED";

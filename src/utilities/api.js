@@ -3,7 +3,7 @@ import {
   getAccessToken,
   getRefreshToken,
   setCookieFromResponce,
-} from './🍪';
+} from './cookies';
 
 const defaultHeader = { 'Content-Type': 'application/json; charset=UTF-8' };
 

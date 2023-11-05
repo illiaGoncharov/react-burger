@@ -1,4 +1,4 @@
-import { apiGetIngredients } from "../../utils/api";
+import { apiGetIngredients } from "../../utilities/api";
 
 export const GET_INGREDIENTS_FAILED = "GET_INGREDIENTS_FAILED";
 export const GET_INGREDIENTS_REQUEST = "GET_INGREDIENTS_REQUEST";

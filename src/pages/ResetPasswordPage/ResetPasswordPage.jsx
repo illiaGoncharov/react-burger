@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./ResetPasswordPage.module.css";
 import { Link, useNavigate } from "react-router-dom"; 
-import { apiResetPassword } from "../../utils/api"; 
-import { usePasswordShow } from "../../utils/utility";
+import { apiResetPassword } from "../../utilities/api"; 
+import { usePasswordShow } from "../../utilities/utilities";
 
 // import { useForm } from '../../hooks/useForm';
 

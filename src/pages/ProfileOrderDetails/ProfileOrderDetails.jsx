@@ -10,29 +10,46 @@ import {
   wsProfileOrdersConnectionStart,
 } from "../../services/actions/wsProfileOrdersActions";
 
-import { WS_BASE_URL } from "./../../utils/constants";
+import { WS_BASE_URL } from "../../utilities/constants";
+import { extractAltFromURL } from "../../utilities/utilities";
+// import { calculateTotalPrice } from "../../utilities/utilities";
 
 const ProfileOrderDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const ingredientsData = useSelector((store) => store.ingredients.ingredients);
+  const orders = useSelector((store) => store.wsProfileOrders.orders);
 
   useEffect(() => {
+    // Запуск эффекта при монтировании компонента
     const token = (localStorage.getItem("accessToken") || "").replace("Bearer ", "");
+    // Запуск WebSocket соединения для профиля
     dispatch(
-      wsProfileOrdersConnectionStart(`${WS_BASE_URL}/orders?token=${token}`)
+      // wsProfileOrdersConnectionStart(`${WS_BASE_URL}/?token=${token}`)
+      wsProfileOrdersConnectionStart(`wss://norma.nomoreparties.space/orders?token=${token}`)
     );
-
     return () => {
       dispatch(wsProfileOrdersConnectionStop());
     };
   }, [dispatch]);
 
-  const orders = useSelector((store) => store.wsProfileOrders.orders);
-  const ingredientsData = useSelector((store) => store.ingredients.ingredients);
-  
-  const orderElement = useMemo(() => orders.find((el) => el._id === id), [orders, id]);
-  const ingredients = useMemo(() => orderElement?.ingredients.map(ingredient => ingredientsData.find(el => el._id === ingredient)), [orderElement, ingredientsData]);
-  const totalPrice = useMemo(() => ingredients?.reduce((accumulator, item) => item.price + accumulator, 0), [ingredients]);
+  // Мемоизированное получение конкретного заказа
+  const orderElement = useMemo(() => 
+    orders?.find((element) => element._id === id
+  ), [orders]);
+
+  // Мемоизированное получение ингредиентов 
+  const ingredients = useMemo(() => 
+    orderElement?.ingredients.map(ingredient => ingredientsData.find(el => el._id === ingredient)
+  ), [orderElement, ingredientsData]);
+
+  // Мемоизированное вычисление общей стоимости 
+  const totalPrice = useMemo(() => 
+    ingredients?.reduce((accumulator, item) => item.price + accumulator, 0
+  ), [ingredients]);
+
+  // Прячем повторения 
+  const displayedIngredients = [];
 
   return orderElement ? (
     <main className={`${styles.profile_order__main}`}>
@@ -53,18 +70,25 @@ const ProfileOrderDetails = () => {
       <h2 className="mb-6 text text_type_main-medium">Состав:</h2>
       <ul className={`${styles.profile_order__list} ${styles.profile_order__scroll} custom-scroll`}>
         {ingredients.map((el, index) => {
-          return (
-            <li className={`${styles.profile_order__listElement} mr-6`} key={index}>
-              <div className={styles.profile_order__imgAndName}>
-                <img alt=":)" src={el.image} className={`${styles.profile_order__image} mr-4`} />
-                <p className={`text text_type_main-default ${styles.profile_order__name}`}>{el.name}</p>
-              </div>
-              <div className={styles.profile_order__price}>
-                <p className="text text_type_digits-default mr-2">{el.price}</p>
-                <CurrencyIcon />
-              </div>
-            </li>
-          );
+          if (!displayedIngredients.includes(el._id)) {
+            displayedIngredients.push(el._id);
+            const ingredientCount = orderElement.ingredients.filter(ingredientId => ingredientId === el._id).length;
+
+            return (
+              <li className={`${styles.profile_order__listElement} mr-6`} key={index}>
+                <div className={styles.profile_order__imgAndName}>
+                  <img alt={extractAltFromURL(el.image)} src={el.image} className={`${styles.profile_order__image} mr-4`} />
+                  <p className={`text text_type_main-default ${styles.profile_order__name}`}>{el.name}</p>
+                </div>
+                <div className={styles.profile_order__price}>
+                  <span className="text text_type_digits-default mr-2">{ingredientCount} x</span>
+                  <p className="text text_type_digits-default mr-2">{el.price}</p>
+                  <CurrencyIcon />
+                </div>
+              </li>
+            );
+          }
+          return null; 
         })}
       </ul>
       <div className={styles.profile_order__timeAndTotalPrice}>
@@ -76,7 +100,7 @@ const ProfileOrderDetails = () => {
       </div>
     </main>
   ) : (
-    <h1 className={`text text_type_main-large ${styles.profile_order__loading}`}>Загрузка...</h1>
+      <h1 className={`text text_type_main-large ${styles.profile_order__loading}`}>ProfileOrderDetails...</h1>
   );
 };
 

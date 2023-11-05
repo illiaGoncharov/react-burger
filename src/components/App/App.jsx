@@ -10,7 +10,6 @@ import {
   FeedOrderDetails,
   ProfileOrderDetails,
 } from "../../pages";
-
 import HomePage from "../../pages/HomePage/HomePage";
 import LoginPage from "../../pages/LoginPage/LoginPage";
 import RegisterPage from "../../pages/RegisterPage/RegisterPage";
@@ -30,12 +29,13 @@ import IngredientDetails from "../IngredientDetails/IngredientDetails";
 import { OnlyAuth, OnlyUnAuth } from "../ProtectedRoute/ProtectedRoute";
 
 function App() {
-  const [wasOnForgotPassword, setWasOnForgotPassword] = useState(false);
-
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  const background = location.state && location.state.background;
+  const background = location.state && location.state.background;  
+
+  const [wasOnForgotPassword, setWasOnForgotPassword] = useState(false);
+
   const ingredientsRequest = useSelector((store) => store.ingredients.ingredientsRequest);
 
   useEffect(() => {
@@ -70,6 +70,7 @@ function App() {
                     onEnter={() => setWasOnForgotPassword(true)}
                   />}
               />
+
               <Route
                 path="/reset-password"
                 element={
@@ -77,7 +78,6 @@ function App() {
                     component={<ResetPasswordPage />}
                     onEnter={() => {
                       if (!wasOnForgotPassword) {
-                        // Редирект пользователя обратно на страницу forgot-password
                         navigate("/forgot-password");
                       }
                     }}
@@ -88,7 +88,8 @@ function App() {
               <Route
                 path="/profile/orders/:id"
                 element={<OnlyAuth component={<ProfileOrderDetails />} />}
-              ></Route>
+              />
+
               <Route path="/feed" element={<FeedPage />}></Route>
               <Route path="/feed/:id" element={<FeedOrderDetails />} />
               <Route path="/ingredients/:id" element={<IngredientDetails />}></Route>

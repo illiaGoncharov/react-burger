@@ -6,7 +6,7 @@ import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-component
 import styles from "./LoginPage.module.css";
 
 import { logInUser } from "../../services/actions/userActions";
-import { usePasswordShow } from "../../utils/utility";
+import { usePasswordShow } from "../../utilities/utilities";
 
 const LoginPage = () => {
   const dispatch = useDispatch();

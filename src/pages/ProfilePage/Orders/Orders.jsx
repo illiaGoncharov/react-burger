@@ -44,6 +44,6 @@ export const Orders = () => {
       </ul>
     </section>
   ) : (
-    <h1 className="text text_type_main-large">hic sunt dracones</h1>
+      <h1 className="text text_type_main-large">Orders...</h1>
   );
 };

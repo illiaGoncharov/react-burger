@@ -4,7 +4,7 @@ import {
   apiUserLogIn,
   apiUserLogOut,
   apiUserReg,
-} from "../../utils/api";
+} from "../../utilities/api";
 
 export const SET_AUTH_CHECKED = "SET_AUTH_CHECKED";
 

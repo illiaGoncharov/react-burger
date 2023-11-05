@@ -1,4 +1,4 @@
-import { wsActionsCreater } from "../../utils/utility";
+import { wsActionsCreater } from "../../utilities/utilities";
 
 export const WS_PROFILE_ORDERS_CONNECTION_START = "WS_PROFILE_ORDERS_CONNECTION_START";
 export const WS_PROFILE_ORDERS_CONNECTION_SUCCESS = "WS_PROFILE_ORDERS_CONNECTION_SUCCESS";

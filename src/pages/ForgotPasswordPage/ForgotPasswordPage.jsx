@@ -2,7 +2,7 @@ import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-component
 import { useState } from "react";
 import styles from "./ForgotPasswordPage.module.css";
 import { Link, useNavigate } from "react-router-dom";
-import { apiForgotPassword } from "../../utils/api";
+import { apiForgotPassword } from "../../utilities/api";
 
 const ForgotPasswordPage = () => {
   const [emailValue, setEmailValue] = useState("");
