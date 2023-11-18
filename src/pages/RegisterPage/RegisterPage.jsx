@@ -1,5 +1,3 @@
-// import { useState } from "react";
-
 import {
   Input,
   Button, 
@@ -11,36 +9,28 @@ import styles from "./RegisterPage.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { regUser } from "../../services/actions/userActions";
 import { useDispatch, useSelector } from "react-redux";
-// import { usePasswordShow } from "../../utils/utility";
 
 import PropTypes from "prop-types";
 import { useForm } from '../../hooks/useForm';
 
 const RegisterPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const userRegSuccess = useSelector((store) => store.userData.registerUserSuccess);
+
   const { values, handleChange, setValues } = useForm({
     loginValue: "",
     passwordValue: "",
     nameValue: "",
   });
-  // const[loginValue, setLoginValue] = useState("");
-  // const [passwordValue, setPasswordValue] = useState("");
-  // const [nameValue, setNameValue] = useState("");
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const userRegSuccess = useSelector((store) => store.userData.registerUserSuccess);
 
   const submitForm = (e) => {
     e.preventDefault();
 
     if (userRegSuccess) {
-      // setLoginValue("");
-      // setPasswordValue("");
-      // setNameValue("");
       setValues({ loginValue: "", passwordValue: "", nameValue: "" });
       navigate("/login", { replace: true });
     } else {
-      // dispatch(regUser(loginValue, passwordValue, nameValue));
       dispatch(regUser(values.loginValue, values.passwordValue, values.nameValue));
     }
   };
@@ -56,9 +46,6 @@ const RegisterPage = () => {
         <h2 className="text text_type_main-medium">Регистрация</h2>
         <div className="mb-6 mt-6">
           <Input
-            // onChange={(e) => {
-            //   setNameValue(e.target.value);
-            // }}
             onChange={handleChange}
             name="nameValue"
             type="text"
@@ -68,9 +55,6 @@ const RegisterPage = () => {
         </div>
         <div className="mb-6">
           <EmailInput
-            // onChange={(e) => {
-            //   setLoginValue(e.target.value);
-            // }}
             onChange={handleChange}
             name="loginValue"
             type="email"
@@ -79,16 +63,6 @@ const RegisterPage = () => {
           />
         </div>
         <div className="mb-6">
-          {/* <Input
-            onChange={(e) => {
-              setPasswordValue(e.target.value);
-            }}
-            type={usePasswordShow.type === "email" ? "email" : "text"} 
-            value={passwordValue}
-            icon={`${usePasswordShow.icon}`}
-            placeholder="Пароль"
-            onIconClick={() => usePasswordShow.showPassword()}
-          ></Input> */}
           <PasswordInput
             onChange={handleChange}
             name="passwordValue"

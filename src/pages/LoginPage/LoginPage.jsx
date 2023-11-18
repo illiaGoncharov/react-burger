@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
@@ -6,14 +5,18 @@ import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-component
 import styles from "./LoginPage.module.css";
 
 import { logInUser } from "../../services/actions/userActions";
-import { usePasswordShow } from "../../utilities/utilities";
+import { usePasswordShow } from "../../utilities/variousUtils";
+import { useForm } from '../../hooks/useForm';
 
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [loginValue, setLoginValue] = useState("");
-  const [passwordValue, setPasswordValue] = useState("");
+  // Использование хука useForm для управления формой
+  const { values, handleChange } = useForm({
+    login: "",
+    password: "",
+  });
   
   const userLogInSuccess = useSelector((store) => {
     return store.userData.logInUserSuccess;
@@ -23,10 +26,13 @@ const LoginPage = () => {
 
   const logIn = (e) => {
     e.preventDefault();
-    dispatch(logInUser(loginValue, passwordValue));
+    dispatch(logInUser(values.login, values.password));
     if (userLogInSuccess) {
-      setLoginValue("");
-      setPasswordValue("");
+      // Сброс значений полей формы и переход на предыдущую страницу
+      values.setValues({
+        login: "",
+        password: "",
+      });
       navigate(-1);
     }
   };
@@ -37,21 +43,19 @@ const LoginPage = () => {
         <h2 className="text text_type_main-medium">Вход</h2>
         <div className="mb-6 mt-6">
           <Input
-            onChange={(e) => {
-              setLoginValue(e.target.value);
-            }}
+            onChange={(e) => handleChange(e)}
             type="email"
-            value={loginValue}
+            value={values.login}
+            name="login"
             placeholder="E-mail"
           ></Input>
         </div>
         <div className="mb-6">
           <Input
-            onChange={(e) => {
-              setPasswordValue(e.target.value);
-            }}
+            onChange={(e) => handleChange(e)}
             type={`${passwordShow.type}`}
-            value={passwordValue}
+            value={values.password}
+            name="password"
             icon={`${passwordShow.icon}`}
             placeholder="Пароль"
             onIconClick={() => {

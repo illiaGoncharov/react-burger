@@ -1,17 +1,20 @@
-import styles from "./Profile.module.css";
-import { Input } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+import styles from "./Profile.module.css";
+import { Input } from "@ya.praktikum/react-developer-burger-ui-components";
+
 import { postUserData } from "../../../services/actions/userActions";
+import { useForm } from '../../../hooks/useForm';
+
 export const Profile = () => {
   const dispatch = useDispatch();
-
-  const name = useSelector((store) => store.userData.userData.user.name);
-  const login = useSelector((store) => store.userData.userData.user.email);
-
-  const [loginValue, setLoginValue] = useState(login);
-  const [passwordValue, setPasswordValue] = useState("123");
-  const [nameValue, setNameValue] = useState(name);
+  
+  const { values, handleChange, setValues } = useForm({
+    login: useSelector((store) => store.userData.userData.user.email),
+    password: "ilia3000@gmail.com",
+    name: useSelector((store) => store.userData.userData.user.name),
+  });
 
   const [disabledName, setDisabledName] = useState(true);
   const [disabledLogin, setDisabledLogin] = useState(true);
@@ -22,25 +25,28 @@ export const Profile = () => {
     setDisabledLogin(true);
     dispatch(postUserData(login, name));
   };
+  
   return (
     <div className={styles.profile__inputs}>
-      <form onSubmit={(e) => handleSubmit(e, nameValue, loginValue)} className="mb-6">
+      <form onSubmit={(e) => handleSubmit(e, values.name, values.login)} className="mb-6">
         <Input
-          onChange={(e) => setNameValue(e.target.value)}
+          onChange={(e) => handleChange(e)}
           type="text"
           icon={"EditIcon"}
-          value={nameValue}
+          value={values.name}
+          name="name"
           placeholder={"Имя"}
           disabled={disabledName}
           onIconClick={() => setDisabledName(!disabledName)}
         ></Input>
       </form>
-      <form onSubmit={(e) => handleSubmit(e, nameValue, loginValue)} className="mb-6">
+      <form onSubmit={(e) => handleSubmit(e, values.name, values.login)} className="mb-6">
         <Input
-          onChange={(e) => setLoginValue(e.target.value)}
+          onChange={(e) => handleChange(e)}
           type="email"
           icon={"EditIcon"}
-          value={loginValue}
+          value={values.login}
+          name="email"
           placeholder={"Логин"}
           disabled={disabledLogin}
           onIconClick={() => setDisabledLogin(!disabledLogin)}
@@ -48,10 +54,11 @@ export const Profile = () => {
       </form>
       <div className="mb-6">
         <Input
-          onChange={(e) => setPasswordValue(e.target.value)}
+          onChange={(e) => handleChange(e)}
           type={"password"}
           icon={"EditIcon"}
-          value={passwordValue}
+          value={values.password}
+          name="password"
           placeholder={"Пароль"}
           disabled={true}
         ></Input>

@@ -1,30 +1,25 @@
-import { useState } from "react";
 import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./ResetPasswordPage.module.css";
 import { Link, useNavigate } from "react-router-dom"; 
 import { apiResetPassword } from "../../utilities/api"; 
-import { usePasswordShow } from "../../utilities/utilities";
+import { usePasswordShow } from "../../utilities/variousUtils";
 
-// import { useForm } from '../../hooks/useForm';
+import { useForm } from '../../hooks/useForm';
 
 const ResetPasswordPage = () => {
-  const [passwordValue, setPasswordValue] = useState("");
-  const [token, setToken] = useState("");
   const navigate = useNavigate();
 
-  // const { values, handleChange, setValues } = useForm({
-  //   loginValue: "",
-  //   passwordValue: "",
-  //   nameValue: "",
-  // });
+  const { values, handleChange, setValues } = useForm({
+    passwordValue: "",
+    token: "",
+  });
 
   const submit = (e) => {
     e.preventDefault();
-    apiResetPassword(passwordValue, token)
+    apiResetPassword(values.passwordValue, values.token)
       .then(() => {
         localStorage.removeItem("resetPasswordOk");
-        setPasswordValue("");
-        setToken("");
+        setValues({ passwordValue: "", token: "" });
         navigate("/login"); 
       })
       .catch(() => {
@@ -41,11 +36,9 @@ const ResetPasswordPage = () => {
         <h2 className="text text_type_main-medium">Восстановление пароля</h2>
         <div className="mb-6 mt-6">
           <Input
-            onChange={(e) => {
-              setPasswordValue(e.target.value);
-            }}
+            onChange={handleChange}
             type={`${passwordShow.type}`}
-            value={passwordValue}
+            value={values.passwordValue}
             placeholder="Введите новый пароль"
             icon={`${passwordShow.icon}`}
             onIconClick={passwordShow.showPassword}
@@ -53,11 +46,9 @@ const ResetPasswordPage = () => {
         </div>
         <div className="mb-6">
           <Input
-            onChange={(e) => {
-              setToken(e.target.value);
-            }}
+            onChange={handleChange}
             type="text"
-            value={token}
+            value={values.token}
             placeholder="Введите код из письма"
           ></Input>
         </div>

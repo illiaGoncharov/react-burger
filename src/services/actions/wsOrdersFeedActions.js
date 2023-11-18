@@ -1,4 +1,4 @@
-import { wsActionsCreater } from "../../utilities/utilities";
+import { wsActionsCreater } from "../../utilities/wsUtils";
 
 export const WS_ORDERS_FEED_CONNECTION_START = "WS_ORDERS_FEED_CONNECTION_START";
 export const WS_ORDERS_FEED_CONNECTION_SUCCESS = "WS_ORDERS_FEED_CONNECTION_SUCCESS";

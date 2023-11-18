@@ -12,17 +12,14 @@ import {
 } from "../../services/actions/wsOrdersFeedActions";
 
 import { WS_BASE_URL } from "../../utilities/constants";
-import { extractAltFromURL } from "../../utilities/utilities";
-import { calculateTotalPrice } from "../../utilities/utilities";
+import { extractAltFromURL } from "../../utilities/variousUtils";
 
 const FeedOrderDetails = () => {
-  // Извлекаем параметр 'id' из URL
   const { id } = useParams();
   const dispatch = useDispatch();
-  // Получаем данные о ингредиентах и заказах из Redux-состояния
   const ingredientsData = useSelector((store) => store.ingredients.ingredients);
   const orders = useSelector((store) => store.wsOrdersFeed.orders);
-
+  
   useEffect(() => {
     dispatch(
       wsOrdersFeedConnectionStart(`${WS_BASE_URL}/all`)
@@ -34,7 +31,7 @@ const FeedOrderDetails = () => {
 
   const orderElement = useMemo(() =>
     orders?.find((element) => element._id === id
-    ), [orders]);
+    ), [id, orders]);
 
   // Мемоизированное получение ингредиентов 
   const ingredients = useMemo(() =>
@@ -48,6 +45,7 @@ const FeedOrderDetails = () => {
 
   // Прячем повторения 
   const displayedIngredients = [];
+
 
   const getOrderStatusText = (status) => {
     switch (status) {

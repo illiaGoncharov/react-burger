@@ -1,18 +1,23 @@
-import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useState } from "react";
-import styles from "./ForgotPasswordPage.module.css";
 import { Link, useNavigate } from "react-router-dom";
+
+import styles from "./ForgotPasswordPage.module.css";
+import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
+
 import { apiForgotPassword } from "../../utilities/api";
+import { useForm } from '../../hooks/useForm';
 
 const ForgotPasswordPage = () => {
-  const [emailValue, setEmailValue] = useState("");
   const navigate = useNavigate();
+
+  const { values, handleChange } = useForm({
+    emailValue: "",
+  });
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await apiForgotPassword(emailValue);
+      const res = await apiForgotPassword(values.emailValue);
       localStorage.setItem("resetPasswordOk", res.success);
       navigate("/reset-password", { replace: true });
     } catch (err) {
@@ -23,19 +28,16 @@ const ForgotPasswordPage = () => {
   return (
     <div>
       <form
-        onSubmit={(e) => {
-          handleForgotPassword(e, emailValue);
-        }}
+        onSubmit={handleForgotPassword}
         className={styles.forgot__form}
       >
         <h2 className="text text_type_main-medium">Восстановление пароля</h2>
         <div className="mb-6 mt-6">
           <Input
-            onChange={(e) => {
-              setEmailValue(e.target.value);
-            }}
+            onChange={handleChange}
             type="email"
-            value={emailValue}
+            value={values.emailValue}
+            name="emailValue"
             placeholder="Укажите e-mail"
           ></Input>
         </div>

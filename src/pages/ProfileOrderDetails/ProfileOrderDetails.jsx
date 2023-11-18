@@ -10,9 +10,7 @@ import {
   wsProfileOrdersConnectionStart,
 } from "../../services/actions/wsProfileOrdersActions";
 
-import { WS_BASE_URL } from "../../utilities/constants";
-import { extractAltFromURL } from "../../utilities/utilities";
-// import { calculateTotalPrice } from "../../utilities/utilities";
+import { extractAltFromURL } from "../../utilities/variousUtils";
 
 const ProfileOrderDetails = () => {
   const { id } = useParams();
@@ -21,11 +19,9 @@ const ProfileOrderDetails = () => {
   const orders = useSelector((store) => store.wsProfileOrders.orders);
 
   useEffect(() => {
-    // Запуск эффекта при монтировании компонента
     const token = (localStorage.getItem("accessToken") || "").replace("Bearer ", "");
-    // Запуск WebSocket соединения для профиля
+    // Запуск WebSocket 
     dispatch(
-      // wsProfileOrdersConnectionStart(`${WS_BASE_URL}/?token=${token}`)
       wsProfileOrdersConnectionStart(`wss://norma.nomoreparties.space/orders?token=${token}`)
     );
     return () => {
@@ -36,7 +32,7 @@ const ProfileOrderDetails = () => {
   // Мемоизированное получение конкретного заказа
   const orderElement = useMemo(() => 
     orders?.find((element) => element._id === id
-  ), [orders]);
+  ), [id, orders]);
 
   // Мемоизированное получение ингредиентов 
   const ingredients = useMemo(() => 
@@ -50,7 +46,7 @@ const ProfileOrderDetails = () => {
 
   // Прячем повторения 
   const displayedIngredients = [];
-
+  
   return orderElement ? (
     <main className={`${styles.profile_order__main}`}>
       <p className={`${styles.profile_order__orderNumber} text text_type_digits-default mb-10`}>
