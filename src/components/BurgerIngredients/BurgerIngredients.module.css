@@ -1,21 +1,26 @@
-.ingredients {
-    max-width: 600px;
+.tab_ontainer {
+  display: flex;
 }
 
-.ingredients__tabs {
-    display: flex;
-    flex-direction: row;
+.scroll {
+  height: 600px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
-.ingredients__list {
-    list-style-type: none;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-around;
+.scroll__ingredients {
+  display: flex;
+  flex-wrap: wrap;
+  width: 611px;
 }
 
-.ingredients__scroll {
-    max-height: 664px;
-    overflow-y: auto;
+.ingredient__list {
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  color: white;
+}
+
+.ingredient__link {
+  text-decoration: none;
 }

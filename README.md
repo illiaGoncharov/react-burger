@@ -1,24 +1,31 @@
-# Добро пожаловать в проект Stellar Burger!
+# Проект Stellar Burgers
 
-Этот проект является реализацией веб-приложения для создания и заказа бургеров. В проекте используется библиотека React и библиотека управления состоянием Redux.
+## О проекте Stellar Burgers
 
-## Функциональность приложения позволяет пользователю:
+**Stellar Burgers** — учебный проект  Яндекс Практикума
 
-- выбирать ингредиенты для создания бургера;
-- изменять порядок ингредиентов;
-- просматривать детали каждого ингредиента;
-- оформлять заказ;
+Для управления состоянием используется Redux, а для перетаскивания компонентов - React DnD.
 
-Код проекта разделен на компоненты, что упрощает его поддержку и развитие. Компоненты соединены вместе при помощи библиотеки Redux.
+---
 
-Для стилизации компонентов используется библиотека CSS-модулей.
+## Cтек технологий
 
-## Проект можно запустить локально при помощи команды:
+В проекте используются: React, JavaScript, WebPack, HTML, CSS и хранится на GitHub.
 
-### npm start
+![React](https://img.shields.io/badge/react-%23121011.svg?style=for-the-badge&logo=react&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![Webpack](https://img.shields.io/badge/webpack-%238DD6F9.svg?style=for-the-badge&logo=webpack&logoColor=black)
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white) ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 
-## Запуск проекта требует предварительной установки всех зависимостей:
+---
 
-### npm install
+## Макет 
 
-Данный проект разработан в образовательных целях.
+- [Figma](<https://www.figma.com/file/ocw9a6hNGeAejl4F3G9fp8/React-_-%D0%9F%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%BD%D1%8B%D0%B5-%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B8-(3-%D0%BC%D0%B5%D1%81%D1%8F%D1%86%D0%B0)_external_link?node-id=2974:2989>) - макет проекта;
+
+---
+
+### Инструкция по установке
+
+- Установить [Node.js](https://nodejs.org/ru/)
+- Клонировать репозиторий ` git clone git@github.com/yakovsamsonov/react-stellar-burger/.git`
+- Установить зависимости `npm install`
+- Запустить приложение `npm start`

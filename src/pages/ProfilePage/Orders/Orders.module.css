@@ -1,0 +1,22 @@
+.order__link {
+  text-decoration: none;
+  color: white;
+}
+
+.order__scroll {
+  height: 770px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+}
+
+.order__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.order__li {
+  margin-bottom: 20px;
+}
