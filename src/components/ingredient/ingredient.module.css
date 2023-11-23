@@ -1,0 +1,22 @@
+.link {
+  color: #fff;
+  text-decoration: none;
+}
+
+.el {
+  width: 100%;
+  max-width: 272px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  align-items: center;
+  cursor: pointer;
+  text-align: center;
+}
+
+.price {
+  display: flex;
+  flex-direction: row;
+  gap: 9px;
+}

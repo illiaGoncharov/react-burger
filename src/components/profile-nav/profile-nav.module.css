@@ -1,0 +1,38 @@
+.nav {
+  width: 320px;
+  margin: 0 auto;
+  padding-top: 110px;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 0;
+  padding: 20px 0;
+  list-style: none;
+}
+
+.link {
+  text-decoration: none;
+  color: var(--text-inactive-color);
+}
+
+.link_active {
+  color: #f2f2f3;
+  cursor: unset;
+  text-decoration: none;
+}
+
+.button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--text-inactive-color);
+}
+
+.caption {
+  padding-top: 80px;
+  color: rgba(133, 133, 173, 1);
+}

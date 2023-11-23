@@ -1,0 +1,6 @@
+.profile {
+  display: flex;
+  flex-direction: row;
+  max-width: 1240px;
+  gap: 60px;
+}

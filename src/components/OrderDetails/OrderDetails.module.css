@@ -1,9 +1,0 @@
-.details__container {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-}
-
-.details__data {
-  text-shadow: 0 0 50px #4c4cff;
-}
