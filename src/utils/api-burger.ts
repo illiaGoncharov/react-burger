@@ -1,12 +1,19 @@
 import { BASE_URL } from "./constants";
-
 import { fetchWithRefresh } from "./api-auth";
-
 import { request } from "./utils";
 
-export const getIngredientsData = () => request("/ingredients");
+/**
+ * Получение данных об ингредиентах.
+ * @returns {Promise<any>} - Объект JSON с данными об ингредиентах.
+ */
+export const getIngredientsData = (): Promise<any> => request("/ingredients");
 
-export const postOrder = (data: string[]) => {
+/**
+ * Отправка заказа на сервер.
+ * @param {string[]} data - Массив идентификаторов ингредиентов в заказе.
+ * @returns {Promise<any>} - Объект JSON с данными о созданном заказе.
+ */
+export const postOrder = (data: string[]): Promise<any> => {
   return fetchWithRefresh(`${BASE_URL}/orders`, {
     method: "POST",
     headers: {
@@ -17,5 +24,10 @@ export const postOrder = (data: string[]) => {
   });
 };
 
-export const getOrderInfoData = (order: string | undefined) =>
+/**
+ * Получение информации о заказе.
+ * @param {string | undefined} order - Идентификатор заказа.
+ * @returns {Promise<any>} - Объект JSON с данными о заказе.
+ */
+export const getOrderInfoData = (order: string | undefined): Promise<any> =>
   request(`/orders/${order}`);

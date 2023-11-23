@@ -2,7 +2,12 @@ import { checkResponse, request } from "./utils";
 import { BASE_URL } from "./constants";
 import { TForm, TOptions } from "./types";
 
-export const registerUser = (data: TForm) =>
+/**
+ * Регистрация нового пользователя.
+ * @param {TForm} data - Данные пользователя для регистрации.
+ * @returns {Promise<any>} - Объект JSON с результатами регистрации.
+ */
+export const registerUser = (data: TForm): Promise<any> =>
   request("/auth/register", {
     method: "POST",
     headers: {
@@ -15,7 +20,12 @@ export const registerUser = (data: TForm) =>
     }),
   });
 
-export const loginProfile = (data: TForm) =>
+/**
+ * Вход в профиль пользователя.
+ * @param {TForm} data - Данные пользователя для входа.
+ * @returns {Promise<any>} - Объект JSON с результатами входа.
+ */
+export const loginProfile = (data: TForm): Promise<any> =>
   request("/auth/login", {
     method: "POST",
     headers: {
@@ -27,7 +37,12 @@ export const loginProfile = (data: TForm) =>
     }),
   });
 
-export const logoutProfile = (data: string | null) =>
+/**
+ * Выход из профиля пользователя.
+ * @param {string | null} data - Токен пользователя.
+ * @returns {Promise<any>} - Объект JSON с результатами выхода.
+ */
+export const logoutProfile = (data: string | null): Promise<any> =>
   request("/auth/logout", {
     method: "POST",
     headers: {
@@ -38,7 +53,11 @@ export const logoutProfile = (data: string | null) =>
     }),
   });
 
-export const refreshToken = () =>
+/**
+ * Обновление токена доступа.
+ * @returns {Promise<any>} - Объект JSON с обновленным токеном доступа.
+ */
+export const refreshToken = (): Promise<any> =>
   request("/auth/token", {
     method: "POST",
     headers: {
@@ -49,7 +68,13 @@ export const refreshToken = () =>
     }),
   });
 
-export const fetchWithRefresh = async (url: string, options: TOptions) => {
+/**
+ * Выполнение запроса с обновлением токена доступа.
+ * @param {string} url - URL запроса.
+ * @param {TOptions} options - Параметры запроса.
+ * @returns {Promise<any>} - Объект JSON с результатами запроса.
+ */
+export const fetchWithRefresh = async (url: string, options: TOptions): Promise<any> => {
   try {
     const res = await fetch(url, options);
     return await checkResponse(res);
@@ -70,7 +95,11 @@ export const fetchWithRefresh = async (url: string, options: TOptions) => {
   }
 };
 
-export const getDataUser = () => {
+/**
+ * Получение данных о пользователе.
+ * @returns {Promise<any>} - Объект JSON с данными пользователя.
+ */
+export const getDataUser = (): Promise<any> => {
   return fetchWithRefresh(`${BASE_URL}/auth/user`, {
     method: "GET",
     headers: {
@@ -80,7 +109,12 @@ export const getDataUser = () => {
   });
 };
 
-export const updateDataUser = (data: TForm) => {
+/**
+ * Обновление данных пользователя.
+ * @param {TForm} data - Новые данные пользователя.
+ * @returns {Promise<any>} - Объект JSON с обновленными данными пользователя.
+ */
+export const updateDataUser = (data: TForm): Promise<any> => {
   return fetchWithRefresh(`${BASE_URL}/auth/user`, {
     method: "PATCH",
     headers: {
@@ -95,7 +129,12 @@ export const updateDataUser = (data: TForm) => {
   });
 };
 
-export const forgotPasswordUser = (data: TForm) =>
+/**
+ * Запрос на сброс пароля пользователя.
+ * @param {TForm} data - Данные для сброса пароля.
+ * @returns {Promise<any>} - Объект JSON с результатами запроса на сброс пароля.
+ */
+export const forgotPasswordUser = (data: TForm): Promise<any> =>
   request("/password-reset", {
     method: "POST",
     headers: {
@@ -106,7 +145,13 @@ export const forgotPasswordUser = (data: TForm) =>
     }),
   });
 
-export const resetPasswordUser = (data: TForm) =>
+
+/**
+ * Сброс пароля пользователя.
+ * @param {TForm} data - Данные для сброса пароля.
+ * @returns {Promise<any>} - Объект JSON с результатами сброса пароля.
+ */
+export const resetPasswordUser = (data: TForm): Promise<any> =>
   request("/password-reset/reset", {
     method: "POST",
     headers: {
