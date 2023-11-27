@@ -1,0 +1,6 @@
+.card {
+  display: flex;
+  flex-direction: row;
+  gap: 12.5px;
+  align-items: center;
+}

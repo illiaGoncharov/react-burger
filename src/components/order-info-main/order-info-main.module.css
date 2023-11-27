@@ -1,0 +1,24 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  padding: 60px 40px 40px;
+}
+
+.block {
+  width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 40px;
+  box-sizing: border-box;
+}
+
+.button {
+  padding: 0;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}

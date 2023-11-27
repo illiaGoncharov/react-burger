@@ -1,0 +1,35 @@
+.main {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: auto;
+  padding: 60px 40px 120px;
+  justify-items: center;
+}
+
+.block {
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  min-width: 640px;
+  align-items: center;
+}
+
+.caption {
+  padding-top: 32px;
+}
+
+.image {
+  padding: 60px 0;
+  background-color: transparent;
+}
+
+.text {
+  padding-top: 8px;
+}
+
+.button {
+  padding: 0;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}

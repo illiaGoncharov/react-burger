@@ -1,0 +1,13 @@
+.subsection {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.elements {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr;
+  gap: 24px 32px;
+  list-style-type: none;
+  padding: 0;
+}

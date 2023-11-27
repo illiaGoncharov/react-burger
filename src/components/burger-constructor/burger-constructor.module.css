@@ -1,0 +1,45 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  padding-top: 100px;
+  align-content: center;
+}
+
+.container {
+  max-width: 584px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  max-height: 440px;
+  overflow-y: scroll;
+  padding-right: 8px;
+  gap: 10px;
+}
+
+.capt {
+  display: flex;
+  flex-direction: row;
+  gap: 9.5px;
+  align-items: center;
+}
+
+.el {
+  display: flex;
+  flex-direction: row;
+  padding-top: 40px;
+  padding-right: 16px;
+  gap: 40px;
+  justify-content: flex-end;
+}
+
+.locked {
+  display: flex;
+  flex-direction: column;
+  padding-right: 16px;
+  align-items: flex-end;
+}
