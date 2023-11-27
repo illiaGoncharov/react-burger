@@ -10,8 +10,10 @@ import { TModalProps } from "../../utils/types";
 const Modal: FC<TModalProps> = ({ children, closeModal }) => {
   const modalRoot = document.getElementById("react-modals");
 
+  
   useEffect(() => {
-    const handleEsc = (evt: { key: string }) => {
+    // (evt: { key: string }): Тип KeyboardEvent для событий клавиатуры тут нужно использовать
+    const handleEsc = (evt: KeyboardEvent) => {
       // Проверка на нажатие клавиши Escape
       evt.key === "Escape" && closeModal();
     };

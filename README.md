@@ -26,6 +26,6 @@
 ### Инструкция по установке
 
 - Установить [Node.js](https://nodejs.org/ru/)
-- Клонировать репозиторий ` git clone git@github.com/yakovsamsonov/react-stellar-burger/.git`
+- Клонировать репозиторий `git clone https://github.com/illiaGoncharov/react-burger.git`
 - Установить зависимости `npm install`
 - Запустить приложение `npm start`
